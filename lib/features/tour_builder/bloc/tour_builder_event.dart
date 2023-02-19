@@ -30,3 +30,12 @@ class TourBuilderLoad extends TourBuilderEvent {
   @override
   List<Object?> get props => [tour];
 }
+
+class TourBuilderSave extends TourBuilderEvent {
+  final Tour tour;
+
+  const TourBuilderSave({required this.tour});
+
+  @override
+  List<Object?> get props => [tour];
+}

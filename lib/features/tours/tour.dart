@@ -12,6 +12,22 @@ class Tour {
     required this.time,
     required this.places,
   });
+
+  Tour copyWith({
+    String? title,
+    String? description,
+    double? distance,
+    double? time,
+    List<Place>? places,
+  }) {
+    return Tour(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      distance: distance ?? this.distance,
+      time: time ?? this.time,
+      places: places ?? this.places,
+    );
+  }
 }
 
 class Place {

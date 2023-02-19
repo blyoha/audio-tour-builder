@@ -10,12 +10,22 @@ class TourBuilderBloc extends Bloc<TourBuilderEvent, TourBuilderState> {
   TourBuilderBloc() : super(const TourBuilderInitial()) {
     on<TourBuilderAddPlace>(_onAddPlace);
     on<TourBuilderLoad>(_onLoad);
+    on<TourBuilderSave>(_onSave);
+  }
+
+  void _onSave(
+      TourBuilderSave event,
+      Emitter<TourBuilderState> emit,
+      ) {
+    emit(const TourBuilderSaving());
+
+    // emit(TourBuilderSaved(tour: event.tour));
   }
 
   void _onLoad(
-    TourBuilderLoad event,
-    Emitter<TourBuilderState> emit,
-  ) {
+      TourBuilderLoad event,
+      Emitter<TourBuilderState> emit,
+      ) {
     emit(
       TourBuilderLoaded(
           tour: event.tour ??
@@ -30,15 +40,16 @@ class TourBuilderBloc extends Bloc<TourBuilderEvent, TourBuilderState> {
   }
 
   void _onAddPlace(
-    TourBuilderAddPlace event,
-    Emitter<TourBuilderState> emit,
-  ) {
+      TourBuilderAddPlace event,
+      Emitter<TourBuilderState> emit,
+      ) {
     final Place newPlace = Place(
       title: event.title,
       description: event.description,
     );
 
-    (state as TourBuilderLoaded).tour.places.add(newPlace);
-    emit(state);
+    Tour tour = (state as TourBuilderLoaded).tour.copyWith();
+    tour.places.add(newPlace);
+    emit(TourBuilderLoaded(tour: tour));
   }
 }

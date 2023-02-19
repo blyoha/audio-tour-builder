@@ -38,3 +38,16 @@ class TourBuilderLoaded extends TourBuilderState {
   @override
   List<Object?> get props => [tour];
 }
+
+class TourBuilderSaving extends TourBuilderState {
+  const TourBuilderSaving();
+}
+
+class TourBuilderSaved extends TourBuilderState {
+  final Tour tour;
+
+  const TourBuilderSaved({required this.tour});
+
+  @override
+  List<Object?> get props => [tour];
+}
