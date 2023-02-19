@@ -99,7 +99,7 @@ class TourPage extends StatelessWidget {
             children: [
               const Icon(Icons.place_outlined),
               const Gap(6),
-              Text('${places?.length ?? 0}'),
+              Text('${places.length}'),
             ],
           ),
         ],

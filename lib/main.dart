@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:interview/features/tours/pages/tours_page.dart';
 
 import 'common/utils/styles.dart';
-import 'features/main/main_page.dart';
 
 void main() {
   runApp(const HomeScreen());
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         textTheme: TextTheme(
-          bodyText2: TextStyle(
+          bodyMedium: TextStyle(
             fontSize: 16,
             color: AppColors.black,
           ),
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           foregroundColor: AppColors.black,
         ),
       ),
-      home: const MainPage(),
+      home: const ToursPage(),
     );
   }
 }

@@ -16,17 +16,27 @@ class PointBuilderPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Point builder')),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: null,
         label: const Text('Save'),
         onPressed: () {
           if (titleController.text.isEmpty | descController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Empty text fields!')),
+              const SnackBar(
+                content: Text('Empty text fields!'),
+                duration: Duration(milliseconds: 500),
+              ),
             );
           } else {
             bloc.add(TourBuilderAddPlace(
               title: titleController.text,
               description: descController.text,
             ));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Point saved.'),
+                duration: Duration(milliseconds: 500),
+              ),
+            );
             Navigator.of(context).pop();
           }
         },
