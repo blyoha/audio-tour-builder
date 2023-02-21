@@ -39,6 +39,7 @@ dependencies:
   flutter_bloc: ^8.1.1
   equatable: ^2.0.5
   gap: ^2.0.1
+  firebase_core: ^2.7.0
 
 dev_dependencies:
   flutter_test:
