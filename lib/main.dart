@@ -1,20 +1,30 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:interview/features/tours/pages/tours_page.dart';
 
-import 'common/utils/styles.dart';
+import 'config/theme.dart';
+import 'presentation/pages/home/view/home_page.dart';
 
-void main() {
-  runApp(const HomeScreen());
+// TODO
+// - Remove debug mode banner
+// - Isolate ThemeData
+
+void main() async {
+  // Initialize Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Run the app
+  runApp(const TourBuilderApp());
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class TourBuilderApp extends StatefulWidget {
+  const TourBuilderApp({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<TourBuilderApp> createState() => _TourBuilderAppState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _TourBuilderAppState extends State<TourBuilderApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -56,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
           foregroundColor: AppColors.black,
         ),
       ),
-      home: const ToursPage(),
+      home: const HomePage(),
     );
   }
 }

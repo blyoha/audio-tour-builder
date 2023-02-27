@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:interview/features/tour_builder/pages/tour_builder_page.dart';
 
-import '../../../common/utils/styles.dart';
-import '../../../common/widgets/search_bar_widget.dart';
+import '../../../../blocs/tours/tours.dart';
+import '../../../../config/theme.dart';
+import '../../../../repositories/models/models.dart';
+import '../../../../repositories/tours_repository.dart';
+import '../../../widgets/search_bar_widget.dart';
+import '../../builder/view/tour_builder_page.dart';
 import '../../tour/tour_page.dart';
-import '../bloc/tours_bloc.dart';
-import '../bloc/tours_event.dart';
-import '../bloc/tours_state.dart';
-import '../tour.dart';
 
-class ToursPage extends StatefulWidget {
-  const ToursPage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<ToursPage> createState() => _ToursPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _ToursPageState extends State<ToursPage> {
-  final ToursBloc bloc = ToursBloc();
+class _HomePageState extends State<HomePage> {
+  final ToursBloc bloc = ToursBloc(toursRepository: FirebaseTourRepository());
 
   @override
   void initState() {
     super.initState();
-    bloc.add(ToursLoad());
+    bloc.add(ToursLoadAll());
   }
 
   @override
@@ -33,14 +32,16 @@ class _ToursPageState extends State<ToursPage> {
       create: (context) => bloc,
       child: Scaffold(
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
+            onPressed: () async {
+              await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const TourBuilderPage(),
               ));
+              bloc.add(ToursLoadAll());
             },
             label: const Text('Add'),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
           body: _buildPage()),
     );
   }
@@ -64,9 +65,13 @@ class _ToursPageState extends State<ToursPage> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: GestureDetector(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => TourPage(tour: tour),
-          )),
+          onTap: () async {
+            bloc.add(ToursLoadTour(tour: tour));
+            await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => BlocProvider.value(
+                    value: bloc, child: TourPage(tour: tour))));
+            bloc.add(ToursLoadAll());
+          },
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -96,6 +101,14 @@ class _ToursPageState extends State<ToursPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Tours'),
+        actions: [
+          MaterialButton(
+            child: const Icon(Icons.refresh_rounded),
+            onPressed: () {
+              bloc.add(ToursLoadAll());
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -110,15 +123,17 @@ class _ToursPageState extends State<ToursPage> {
                     child: CircularProgressIndicator(color: AppColors.primary),
                   );
                 }
-                if (state is ToursLoaded) {
+                if (state is ToursAllLoaded) {
                   return Expanded(
-                    child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: state.tours.length,
-                      itemBuilder: (context, index) =>
-                          _buildTourCard(state.tours[index]),
-                    ),
+                    child: state.tours.isEmpty
+                        ? const Center(child: Text('No tours yet!'))
+                        : ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: state.tours.length,
+                            itemBuilder: (context, index) =>
+                                _buildTourCard(state.tours[index]),
+                          ),
                   );
                 }
                 if (state is ToursError) {

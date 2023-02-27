@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:interview/features/tour_builder/bloc/tour_builder_state.dart';
 
-import '../../../common/utils/styles.dart';
-import '../../tours/tour.dart';
-import '../bloc/tour_builder_bloc.dart';
+import '../../../../blocs/tours/tours.dart';
+import '../../../../config/theme.dart';
+import '../../../../repositories/models/models.dart';
 import 'point_builder_page.dart';
 
 class MapPage extends StatelessWidget {
@@ -15,7 +14,7 @@ class MapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TourBuilderBloc bloc = context.read();
+    ToursBloc bloc = context.read();
 
     return Scaffold(
       body: Stack(
@@ -55,9 +54,9 @@ class MapPage extends StatelessWidget {
                     ),
                     const Gap(8),
                     BlocBuilder(
-                      bloc: context.read<TourBuilderBloc>(),
+                      bloc: context.read<ToursBloc>(),
                       builder: (context, state) {
-                        if (state is TourBuilderLoaded) {
+                        if (state is ToursTourLoaded) {
                           return Expanded(
                             child: state.tour.places.isEmpty
                                 ? const SizedBox(

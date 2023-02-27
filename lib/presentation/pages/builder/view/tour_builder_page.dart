@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../tours/tour.dart';
-import '../bloc/tour_builder_bloc.dart';
-import '../bloc/tour_builder_event.dart';
+import '../../../../blocs/tours/tours.dart';
+import '../../../../repositories/models/models.dart';
+import '../../../../repositories/tours_repository.dart';
 import 'map_page.dart';
 import 'tour_details_page.dart';
 
@@ -14,8 +14,8 @@ class TourBuilderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TourBuilderBloc bloc = TourBuilderBloc()
-      ..add(TourBuilderLoad(tour: tour));
+    final ToursBloc bloc = ToursBloc(toursRepository: FirebaseTourRepository())
+      ..add(ToursLoadTour(tour: tour));
 
     return BlocProvider.value(
       value: bloc,
@@ -28,6 +28,13 @@ class TourBuilderPage extends StatelessWidget {
               Tab(child: Text('Details')),
               Tab(child: Text('Map')),
             ]),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_outlined),
+              onPressed: () async {
+                bloc.add(ToursLoadAll());
+                Navigator.of(context).pop();
+              },
+            ),
           ),
           body: TabBarView(
             children: [

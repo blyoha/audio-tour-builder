@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/tour_builder_bloc.dart';
-import '../bloc/tour_builder_event.dart';
+import '../../../../blocs/tours/tours.dart';
+
 
 class PointBuilderPage extends StatelessWidget {
   const PointBuilderPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final TourBuilderBloc bloc = context.read();
+    final ToursBloc bloc = context.read();
     final titleController = TextEditingController();
     final descController = TextEditingController();
 
@@ -27,7 +27,7 @@ class PointBuilderPage extends StatelessWidget {
               ),
             );
           } else {
-            bloc.add(TourBuilderAddPlace(
+            bloc.add(ToursAddPlace(
               title: titleController.text,
               description: descController.text,
             ));
@@ -47,6 +47,8 @@ class PointBuilderPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextField(
+              autofocus: true,
+              textInputAction: TextInputAction.next,
               controller: titleController,
               decoration: const InputDecoration(hintText: 'Title'),
             ),

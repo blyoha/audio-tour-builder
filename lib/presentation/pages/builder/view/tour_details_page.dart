@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import '../../../common/utils/styles.dart';
-import '../../tours/tour.dart';
-import '../bloc/tour_builder_bloc.dart';
-import '../bloc/tour_builder_state.dart';
+import '../../../../blocs/tours/tours.dart';
+import '../../../../config/theme.dart';
+import '../../../../repositories/models/models.dart';
 
 class TourDetailsPage extends StatelessWidget {
-  late final Tour tour;
+  late Tour tour;
   final titleController = TextEditingController();
   final descController = TextEditingController();
 
@@ -16,10 +15,12 @@ class TourDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<ToursBloc>();
+
     return BlocListener(
-      bloc: context.read<TourBuilderBloc>(),
+      bloc: bloc,
       listener: (context, state) {
-        if (state is TourBuilderLoaded) {
+        if (state is ToursTourLoaded) {
           tour = state.tour;
           titleController.text = tour.title;
           descController.text = tour.description;
@@ -34,13 +35,19 @@ class TourDetailsPage extends StatelessWidget {
                 const SnackBar(content: Text('Empty text fields!')),
               );
             } else {
-              // bloc.add(TourBuilderSave(tour: tour));
+              tour = tour.copyWith(
+                title: titleController.text,
+                description: descController.text,
+              );
+              bloc.add(ToursSaveTour(tour: tour));
+
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Tour saved.'),
                   duration: Duration(milliseconds: 500),
                 ),
               );
+              Navigator.pop(context);
             }
           },
           label: const Text('Save Tour'),
@@ -55,13 +62,13 @@ class TourDetailsPage extends StatelessWidget {
             children: [
               Text('Tour title', style: AppTextStyles.cardHeader),
               TextField(
+                textInputAction: TextInputAction.next,
                 controller: titleController,
                 decoration: const InputDecoration(hintText: 'Title'),
               ),
               const Gap(10),
-              Text('Tour title', style: AppTextStyles.cardHeader),
+              Text('Tour description', style: AppTextStyles.cardHeader),
               TextField(
-                maxLines: null,
                 controller: descController,
                 decoration: const InputDecoration(hintText: 'Description'),
               ),

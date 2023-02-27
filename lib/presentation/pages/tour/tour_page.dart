@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:interview/blocs/tours/tours.dart';
 
-import '../../common/utils/styles.dart';
-import '../tour_builder/pages/tour_builder_page.dart';
-import '../tours/tour.dart';
+import '../../../config/theme.dart';
+import '../../../repositories/models/models.dart';
+import '../builder/view/view.dart';
 
-class TourPage extends StatelessWidget {
+class TourPage extends StatefulWidget {
   final Tour tour;
 
   const TourPage({Key? key, required this.tour}) : super(key: key);
 
   @override
+  State<TourPage> createState() => _TourPageState();
+}
+
+class _TourPageState extends State<TourPage> {
+  @override
   Widget build(BuildContext context) {
+    final ToursBloc bloc = context.read();
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(),
@@ -47,9 +55,10 @@ class TourPage extends StatelessWidget {
                     const Gap(10),
                     MaterialButton(
                       color: Colors.white70,
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TourBuilderPage(tour: tour),
+                      onPressed: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              TourBuilderPage(tour: widget.tour),
                         ));
                       },
                       child: Icon(
@@ -57,11 +66,36 @@ class TourPage extends StatelessWidget {
                         color: AppColors.black,
                       ),
                     ),
+                    MaterialButton(
+                      color: Colors.white70,
+                      onPressed: () {
+                        context
+                            .read<ToursBloc>()
+                            .add(ToursDeleteTour(tour: widget.tour));
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.delete,
+                        color: AppColors.black,
+                      ),
+                    ),
                   ],
                 ),
-                _buildDescription(tour.title, tour.description),
+                BlocBuilder(
+                  bloc: bloc,
+                  builder: (context, state) {
+                    String title = "unknown";
+                    String description = "unknown";
+                    if (state is ToursTourLoaded) {
+                      title = state.tour.title;
+                      description = state.tour.description;
+                    }
+                    return _buildDescription(title, description);
+                  },
+                ),
                 const Divider(height: 1),
-                _buildParameters(tour.distance, tour.time, tour.places),
+                _buildParameters(
+                    widget.tour.distance, widget.tour.time, widget.tour.places),
                 const Divider(height: 1),
               ],
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/styles.dart';
+import '../../config/theme.dart';
 
 
 class SearchBar extends StatefulWidget {
