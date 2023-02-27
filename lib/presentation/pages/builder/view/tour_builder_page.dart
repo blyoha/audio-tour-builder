@@ -21,7 +21,6 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
   final descController = TextEditingController();
 
   late ToursBloc bloc;
-  late Tour tour;
 
   @override
   void initState() {
@@ -32,13 +31,18 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
   @override
   Widget build(BuildContext context) {
     final prevRoute = ModalRoute.of(context)!.settings.arguments as String;
+    late List<Place> places;
+    late Tour newTour;
 
     return BlocBuilder(
       bloc: bloc,
       builder: (context, state) {
-        if (state is ToursTourLoaded) tour = state.tour;
-        titleController.text = tour.title;
-        descController.text = tour.description;
+        if (state is ToursTourLoaded) {
+          newTour = state.tour.copyWith();
+          places = List.from(newTour.places);
+        }
+        titleController.text = newTour.title;
+        descController.text = newTour.description;
 
         return DefaultTabController(
           length: 2,
@@ -52,12 +56,11 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_outlined),
                 onPressed: () async {
-                  print(prevRoute);
                   if (state is ToursTourLoaded) {
-                    bloc.add(prevRoute == routes.homePage
-                      ? ToursLoadAll()
-                      : ToursLoadTour(tour: state.tour));
-                  Navigator.of(context).pop();
+                    print('newTour:${newTour.places}');
+                    print('state tour:${state.tour.places}');
+                    bloc.add(ToursLoadTour(tour: state.tour));
+                    Navigator.of(context).pop();
                   }
                 },
               ),
@@ -71,13 +74,16 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
                     const SnackBar(content: Text('Empty text fields!')),
                   );
                 } else {
-                  tour = tour.copyWith(
+                  newTour = newTour.copyWith(
                     title: titleController.text,
                     description: descController.text,
+                    places: places,
                   );
-
-                  bloc.add(ToursSaveTour(tour: tour));
+                  bloc.add(ToursSaveTour(tour: newTour));
                   Navigator.pop(context);
+                  bloc.add(prevRoute == routes.homePage
+                      ? ToursLoadAll()
+                      : ToursLoadTour(tour: newTour));
                 }
               },
               label: const Text('Save Tour'),
@@ -88,7 +94,7 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
                   titleController: titleController,
                   descController: descController,
                 ),
-                const MapPage(),
+                MapPage(places: places),
               ],
             ),
           ),

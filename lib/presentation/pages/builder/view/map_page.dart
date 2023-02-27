@@ -5,17 +5,20 @@ import 'package:gap/gap.dart';
 import '../../../../blocs/tours/tours.dart';
 import '../../../../config/theme.dart';
 import '../../../../repositories/models/models.dart';
-import 'point_builder_page.dart';
 
-class MapPage extends StatelessWidget {
+class MapPage extends StatefulWidget {
   static const String route = 'map';
+  final List places;
 
-  const MapPage({Key? key}) : super(key: key);
+  const MapPage({Key? key, required this.places}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    ToursBloc bloc = context.read();
+  State<MapPage> createState() => _MapPageState();
+}
 
+class _MapPageState extends State<MapPage> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
@@ -58,7 +61,7 @@ class MapPage extends StatelessWidget {
                       builder: (context, state) {
                         if (state is ToursTourLoaded) {
                           return Expanded(
-                            child: state.tour.places.isEmpty
+                            child: widget.places.isEmpty
                                 ? const SizedBox(
                                     height: 200,
                                     child: Text('No places yet!'),
@@ -71,10 +74,10 @@ class MapPage extends StatelessWidget {
                                     controller: scrollController,
                                     separatorBuilder: (context, index) =>
                                         const Gap(6),
-                                    itemCount: state.tour.places.length,
+                                    itemCount: widget.places.length,
                                     itemBuilder: (context, index) =>
                                         _buildPointItem(
-                                            state.tour.places[index]),
+                                            widget.places[index]),
                                     shrinkWrap: true,
                                   ),
                           );
@@ -86,14 +89,56 @@ class MapPage extends StatelessWidget {
                       heroTag: null,
                       label: const Text('Add'),
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => BlocProvider.value(
-                              value: bloc,
-                              child: const PointBuilderPage(),
-                            ),
-                          ),
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            final title = TextEditingController();
+                            final desc = TextEditingController();
+                            return Dialog(
+                              insetPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(autofocus: true, controller: title),
+                                  TextField(controller: desc),
+                                  Row(
+                                    children: [
+                                      MaterialButton(
+                                        child: const Text('Add'),
+                                        onPressed: () {
+                                          widget.places.add(
+                                              Place(
+                                                title: title.text,
+                                                description: desc.text,
+                                              ));
+                                          setState(() {});
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      MaterialButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         );
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) => BlocProvider.value(
+                        //       value: bloc,
+                        //       child: const PointBuilderPage(),
+                        //     ),
+                        //   ),
+                        // );
                       },
                     )
                   ],
