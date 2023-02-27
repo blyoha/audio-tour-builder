@@ -1,106 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:interview/blocs/tours/tours.dart';
 
+import '../../../blocs/tours/tours.dart';
 import '../../../config/theme.dart';
 import '../../../repositories/models/models.dart';
 import '../builder/view/view.dart';
 
 class TourPage extends StatefulWidget {
-  final Tour tour;
+  static const String route = '/tour';
 
-  const TourPage({Key? key, required this.tour}) : super(key: key);
+  const TourPage({Key? key}) : super(key: key);
 
   @override
   State<TourPage> createState() => _TourPageState();
 }
 
 class _TourPageState extends State<TourPage> {
+  late ToursBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = context.read();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ToursBloc bloc = context.read();
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Image.asset(
-              'assets/images/test_image.png',
-              height: 250,
-              fit: BoxFit.fitHeight,
-            ),
-          ),
-          const Gap(12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            ),
-            child: Column(
+      body: BlocBuilder(
+        bloc: bloc,
+        builder: (context, state) {
+          if (state is ToursTourLoaded) {
+            String title = state.tour.title;
+            String description = state.tour.description;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: MaterialButton(
-                        color: AppColors.primary,
-                        onPressed: () {},
-                        child: const Text('Start tour'),
-                      ),
-                    ),
-                    const Gap(10),
-                    MaterialButton(
-                      color: Colors.white70,
-                      onPressed: () async {
-                        await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              TourBuilderPage(tour: widget.tour),
-                        ));
-                      },
-                      child: Icon(
-                        Icons.edit,
-                        color: AppColors.black,
-                      ),
-                    ),
-                    MaterialButton(
-                      color: Colors.white70,
-                      onPressed: () {
-                        context
-                            .read<ToursBloc>()
-                            .add(ToursDeleteTour(tour: widget.tour));
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.delete,
-                        color: AppColors.black,
-                      ),
-                    ),
-                  ],
+                Center(
+                  child: Image.asset(
+                    'assets/images/test_image.png',
+                    height: 250,
+                    fit: BoxFit.fitHeight,
+                  ),
                 ),
-                BlocBuilder(
-                  bloc: bloc,
-                  builder: (context, state) {
-                    String title = "unknown";
-                    String description = "unknown";
-                    if (state is ToursTourLoaded) {
-                      title = state.tour.title;
-                      description = state.tour.description;
-                    }
-                    return _buildDescription(title, description);
-                  },
+                const Gap(12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              color: AppColors.primary,
+                              onPressed: () {},
+                              child: const Text('Start tour'),
+                            ),
+                          ),
+                          const Gap(10),
+                          MaterialButton(
+                            color: Colors.white70,
+                            onPressed: () async {
+                              await Navigator.of(context).pushNamed(
+                                TourBuilderPage.route,
+                                arguments: TourPage.route,
+                              );
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //   builder: (context) => const TourBuilderPage(),
+                              // ));
+                              // bloc.add(ToursLoadTour(tour: ));
+                            },
+                            child: Icon(
+                              Icons.edit,
+                              color: AppColors.black,
+                            ),
+                          ),
+                          MaterialButton(
+                            color: Colors.white70,
+                            onPressed: () {
+                              bloc.add(ToursDeleteTour(tour: state.tour));
+                              Navigator.pop(context);
+                            },
+                            child: Icon(
+                              Icons.delete,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      _buildDescription(title, description),
+                      const Divider(height: 1),
+                      _buildParameters(
+                        state.tour.distance,
+                        state.tour.time,
+                        state.tour.places,
+                      ),
+                      const Divider(height: 1),
+                    ],
+                  ),
                 ),
-                const Divider(height: 1),
-                _buildParameters(
-                    widget.tour.distance, widget.tour.time, widget.tour.places),
-                const Divider(height: 1),
               ],
-            ),
-          ),
-        ],
+            );
+          } else {
+            return CircularProgressIndicator(color: AppColors.primary);
+          }
+        },
       ),
     );
   }

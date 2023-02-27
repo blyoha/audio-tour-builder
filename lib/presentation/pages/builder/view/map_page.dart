@@ -8,9 +8,9 @@ import '../../../../repositories/models/models.dart';
 import 'point_builder_page.dart';
 
 class MapPage extends StatelessWidget {
-  late final Tour tour;
+  static const String route = 'map';
 
-  MapPage({Key? key}) : super(key: key);
+  const MapPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

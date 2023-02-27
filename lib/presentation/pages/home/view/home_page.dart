@@ -5,12 +5,13 @@ import 'package:gap/gap.dart';
 import '../../../../blocs/tours/tours.dart';
 import '../../../../config/theme.dart';
 import '../../../../repositories/models/models.dart';
-import '../../../../repositories/tours_repository.dart';
+import '../../../../routes.dart' as routes;
 import '../../../widgets/search_bar_widget.dart';
-import '../../builder/view/tour_builder_page.dart';
 import '../../tour/tour_page.dart';
 
 class HomePage extends StatefulWidget {
+  static const String route = 'home';
+
   const HomePage({Key? key}) : super(key: key);
 
   @override
@@ -18,32 +19,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ToursBloc bloc = ToursBloc(toursRepository: FirebaseTourRepository());
+  late ToursBloc bloc;
 
   @override
   void initState() {
     super.initState();
+    bloc = context.read();
     bloc.add(ToursLoadAll());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => bloc,
-      child: Scaffold(
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () async {
-              await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const TourBuilderPage(),
-              ));
-              bloc.add(ToursLoadAll());
-            },
-            label: const Text('Add'),
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          body: _buildPage()),
-    );
+    return Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () async {
+            bloc.add(ToursLoadTour(tour: Tour.empty()));
+            await Navigator.of(context).pushNamed(
+              routes.tourBuilderPage,
+              arguments: HomePage.route,
+            );
+            // await Navigator.of(context).push(MaterialPageRoute(
+            //   builder: (context) => const TourBuilderPage(),
+            // ));
+            bloc.add(ToursLoadAll());
+          },
+          label: const Text('Add'),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: _buildPage());
   }
 
   Widget _buildTourCard(Tour tour) {
@@ -67,9 +70,8 @@ class _HomePageState extends State<HomePage> {
         child: GestureDetector(
           onTap: () async {
             bloc.add(ToursLoadTour(tour: tour));
-            await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => BlocProvider.value(
-                    value: bloc, child: TourPage(tour: tour))));
+            await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const TourPage()));
             bloc.add(ToursLoadAll());
           },
           child: Card(

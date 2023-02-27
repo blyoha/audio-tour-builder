@@ -22,11 +22,11 @@ class Tour {
 
     if (json['places'] != null) {
       json['places'].forEach((value) {
-      places.add(Place(
-        title: value['title'],
-        description: value['description'],
-      ));
-    });
+        places.add(Place(
+          title: value['title'],
+          description: value['description'],
+        ));
+      });
     }
 
     return Tour(
@@ -36,6 +36,16 @@ class Tour {
       places: places,
       time: json['time'].toDouble(),
       distance: json['distance'].toDouble(),
+    );
+  }
+
+  factory Tour.empty() {
+    return Tour(
+      title: "",
+      description: "",
+      distance: 0.0,
+      time: 0.0,
+      places: [],
     );
   }
 

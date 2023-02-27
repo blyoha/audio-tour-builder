@@ -5,6 +5,8 @@ import '../../../../blocs/tours/tours.dart';
 
 
 class PointBuilderPage extends StatelessWidget {
+  static const String route = 'pointBuilder';
+
   const PointBuilderPage({Key? key}) : super(key: key);
 
   @override
