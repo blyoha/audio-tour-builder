@@ -47,6 +47,7 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
         return DefaultTabController(
           length: 2,
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: const Text('Create a tour'),
               bottom: const TabBar(tabs: [
@@ -57,8 +58,6 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
                 icon: const Icon(Icons.arrow_back_outlined),
                 onPressed: () async {
                   if (state is ToursTourLoaded) {
-                    print('newTour:${newTour.places}');
-                    print('state tour:${state.tour.places}');
                     bloc.add(ToursLoadTour(tour: state.tour));
                     Navigator.of(context).pop();
                   }
