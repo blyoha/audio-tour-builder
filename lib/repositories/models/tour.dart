@@ -21,12 +21,7 @@ class Tour {
     List<Place> places = [];
 
     if (json['places'] != null) {
-      json['places'].forEach((value) {
-        places.add(Place(
-          title: value['title'],
-          description: value['description'],
-        ));
-      });
+      json['places'].forEach((value) => places.add(Place.fromJson(value)));
     }
 
     return Tour(
