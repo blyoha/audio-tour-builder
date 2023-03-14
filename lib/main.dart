@@ -71,7 +71,6 @@ class _TourBuilderAppState extends State<TourBuilderApp> {
         ),
         initialRoute: routes.homePage,
         onGenerateRoute: routes.controller,
-        // home: const HomePage(),
       ),
     );
   }

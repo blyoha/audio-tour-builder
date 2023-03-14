@@ -22,13 +22,12 @@ class ToursBloc extends Bloc<ToursEvent, ToursState> {
   ) async {
     emit(const ToursSaving());
 
-    late Tour updatedTour;
+    Tour updatedTour = Tour.empty();
     try {
       updatedTour = await toursRepository.updateTour(event.tour);
     } catch (error) {
       emit(const ToursError(error: "Couldn't save the tour"));
     }
-
     emit(ToursTourLoaded(tour: updatedTour));
   }
 
@@ -44,15 +43,7 @@ class ToursBloc extends Bloc<ToursEvent, ToursState> {
     Emitter<ToursState> emit,
   ) {
     emit(
-      ToursTourLoaded(
-          tour: event.tour ??
-              Tour(
-                title: '',
-                description: '',
-                places: [],
-                distance: 0.0,
-                time: 0.0,
-              )),
+      ToursTourLoaded(tour: event.tour ?? Tour.empty()),
     );
   }
 

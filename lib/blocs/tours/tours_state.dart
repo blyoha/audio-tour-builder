@@ -2,14 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../repositories/models/tour.dart';
 
-// initial
-// error
-// loading
-// loaded all
-// tour loaded
-// tour saving
-// tour saved
-
 abstract class ToursState extends Equatable {
   const ToursState();
 
