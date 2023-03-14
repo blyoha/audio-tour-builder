@@ -63,6 +63,7 @@ class ToursBloc extends Bloc<ToursEvent, ToursState> {
     final Place newPlace = Place(
       title: event.title,
       description: event.description,
+      location: event.location,
     );
 
     Tour tour = (state as ToursTourLoaded).tour.copyWith();

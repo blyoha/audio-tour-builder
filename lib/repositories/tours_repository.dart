@@ -26,7 +26,7 @@ class FirebaseTourRepository implements ToursRepository {
         data.addAll(value);
         tours.add(Tour.fromJson(data));
       });
-    } else {}
+    }
 
     return tours;
   }
@@ -35,12 +35,15 @@ class FirebaseTourRepository implements ToursRepository {
   Future<Tour> updateTour(Tour tour) async {
     List places = [];
 
-    for (var val in tour.places) {
+    for (var place in tour.places) {
       places.add({
-        'title': val.title,
-        'description': val.description,
-        'audio': val.audio,
-        'location': val.location,
+        'title': place.title,
+        'description': place.description,
+        'audio': place.audio,
+        'location': {
+          'lat': place.location.latitude,
+          'lng': place.location.longitude,
+        },
       });
     }
 

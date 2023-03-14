@@ -5,13 +5,13 @@ import 'package:latlong2/latlong.dart';
 class Place {
   final String title;
   final String description;
-  final Object? location;
-  final Object? audio;
+  final LatLng location;
+  final File? audio;
 
   Place({
     required this.title,
     required this.description,
-    this.location,
+    required this.location,
     this.audio,
   });
 
