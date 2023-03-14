@@ -41,6 +41,9 @@ dependencies:
   gap: ^2.0.1
   firebase_core: ^2.7.0
   firebase_database: ^10.0.14
+  flutter_map: ^3.1.0
+  latlong2: ^0.8.1
+  file_picker: ^5.2.5
 
 dev_dependencies:
   flutter_test:
