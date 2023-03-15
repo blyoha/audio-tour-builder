@@ -30,6 +30,8 @@ class _MapPageState extends State<MapPage> {
   MapController? _mapController;
   MapOptions? _options;
 
+  late LatLng pointerUp;
+
   final List<Marker> _markers = [];
   final Polyline _route = Polyline(
     color: AppColors.primary,
@@ -52,6 +54,7 @@ class _MapPageState extends State<MapPage> {
       interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
       keepAlive: true,
       onTap: _onMapTap,
+      onPointerUp: (event, point) => pointerUp = point,
     );
   }
 
@@ -74,23 +77,28 @@ class _MapPageState extends State<MapPage> {
       builder: (context, state) {
         if (state is ToursTourLoaded) {
           _markers.clear();
-
           widget.places
               .asMap()
               .forEach((key, value) => _addPoint(key, value.location));
         }
 
-        return FlutterMap(
-          mapController: _mapController,
-          options: _options!,
-          children: [
-            TileLayer(
-              urlTemplate: "$url?api_key={api_key}",
-              additionalOptions: const {"api_key": apiKey},
-            ),
-            PolylineLayer(polylines: [_route]),
-            MarkerLayer(markers: _markers),
-          ],
+        return DragTarget<int>(
+          onAccept: (data) {
+            _markers[data].point.latitude = pointerUp.latitude;
+            _markers[data].point.longitude = pointerUp.longitude;
+          },
+          builder: (context, candidateData, rejectedData) => FlutterMap(
+            mapController: _mapController,
+            options: _options!,
+            children: [
+              TileLayer(
+                urlTemplate: "$url?api_key={api_key}",
+                additionalOptions: const {"api_key": apiKey},
+              ),
+              PolylineLayer(polylines: [_route]),
+              MarkerLayer(markers: _markers),
+            ],
+          ),
         );
       },
     );
@@ -102,8 +110,8 @@ class _MapPageState extends State<MapPage> {
     Marker newMarker = Marker(
       key: valueKey,
       point: latLng,
-      builder: (context) => LongPressDraggable<LatLng>(
-        data: latLng,
+      builder: (context) => LongPressDraggable<int>(
+        data: key,
         feedback: Container(
           width: 40,
           height: 40,
@@ -269,7 +277,7 @@ class _MapPageState extends State<MapPage> {
                         // audio: audioFile,
                       ));
 
-                      _addPoint(widget.places.length, latLng);
+                      _addPoint(widget.places.length - 1, latLng);
 
                       Navigator.of(context).pop();
                     },
