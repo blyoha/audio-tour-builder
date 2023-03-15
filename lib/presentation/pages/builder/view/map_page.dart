@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -97,44 +96,44 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
+  // TODO: Make separate class for a marker
   void _addPoint(int key, LatLng latLng) {
     var valueKey = ValueKey(key);
     Marker newMarker = Marker(
       key: valueKey,
       point: latLng,
-      builder: (context) =>
-          LongPressDraggable<LatLng>(
-            data: latLng,
-            feedback: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.black, width: 2),
-                color: AppColors.primary,
-              ),
-            ),
-            childWhenDragging: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border:
+      builder: (context) => LongPressDraggable<LatLng>(
+        data: latLng,
+        feedback: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.black, width: 2),
+            color: AppColors.primary,
+          ),
+        ),
+        childWhenDragging: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border:
                 Border.all(color: AppColors.black.withOpacity(.8), width: 2),
-                color: AppColors.primary.withOpacity(.8),
-              ),
-            ),
-            child: InkWell(
-              onTap: () {
-                _editPoint(valueKey);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.black, width: 2),
-                  color: AppColors.primary,
-                ),
-              ),
+            color: AppColors.primary.withOpacity(.8),
+          ),
+        ),
+        child: InkWell(
+          onTap: () {
+            _editPoint(valueKey);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.black, width: 2),
+              color: AppColors.primary,
             ),
           ),
+        ),
+      ),
     );
 
     _markers.add(newMarker);
@@ -144,6 +143,7 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+  // TODO: Merge with _addPoint()
   void _editPoint(ValueKey key) {
     Place? place;
     late TextEditingController titleCont;
@@ -163,6 +163,7 @@ class _MapPageState extends State<MapPage> {
               descCont = TextEditingController(text: place?.description);
             }
 
+            // TODO: Separate the dialog
             return Dialog(
               insetPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -206,6 +207,14 @@ class _MapPageState extends State<MapPage> {
                           Navigator.of(context).pop();
                         },
                       ),
+                      MaterialButton(
+                        child: Icon(Icons.delete, color: AppColors.error),
+                        onPressed: () {
+                          widget.places.removeAt(key.value);
+                          setState(() {});
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ],
                   ),
                 ],
@@ -238,7 +247,7 @@ class _MapPageState extends State<MapPage> {
               OutlinedButton(
                 onPressed: () async {
                   FilePickerResult? data =
-                  await FilePicker.platform.pickFiles(type: FileType.audio);
+                      await FilePicker.platform.pickFiles(type: FileType.audio);
 
                   if (data != null) {
                     audioFile = File(data.files.single.path!);
@@ -253,7 +262,6 @@ class _MapPageState extends State<MapPage> {
                   MaterialButton(
                     child: const Text('Add'),
                     onPressed: () {
-                      int key = widget.places.length;
                       widget.places.add(Place(
                         title: title.text,
                         description: desc.text,
@@ -261,13 +269,7 @@ class _MapPageState extends State<MapPage> {
                         // audio: audioFile,
                       ));
 
-                      _addPoint(key, latLng);
-
-                      if (kDebugMode) {
-                        print('Places: ${widget.places}');
-                        print('Markers: $_markers');
-                        print('Polyline: ${_route.points}');
-                      }
+                      _addPoint(widget.places.length, latLng);
 
                       Navigator.of(context).pop();
                     },
@@ -328,22 +330,22 @@ class _MapPageState extends State<MapPage> {
                     return Expanded(
                       child: widget.places.isEmpty
                           ? const SizedBox(
-                        height: 200,
-                        child: Text('No places yet!'),
-                      )
+                              height: 200,
+                              child: Text('No places yet!'),
+                            )
                           : ListView.separated(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 8.0,
-                        ),
-                        controller: scrollController,
-                        separatorBuilder: (context, index) =>
-                        const Gap(6),
-                        itemCount: widget.places.length,
-                        itemBuilder: (context, index) =>
-                            _buildPointItem(widget.places[index]),
-                        shrinkWrap: true,
-                      ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 8.0,
+                              ),
+                              controller: scrollController,
+                              separatorBuilder: (context, index) =>
+                                  const Gap(6),
+                              itemCount: widget.places.length,
+                              itemBuilder: (context, index) =>
+                                  _buildPointItem(widget.places[index]),
+                              shrinkWrap: true,
+                            ),
                     );
                   }
                   return const SizedBox();
