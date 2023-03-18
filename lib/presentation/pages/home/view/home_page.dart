@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import '../../../../blocs/tours/tours.dart';
 import '../../../../config/theme.dart';
 import '../../../../repositories/models/models.dart';
-import '../../../../routes.dart' as routes;
+import '../../../../router.dart';
 import '../../../widgets/search_bar_widget.dart';
 import '../../tour/tour_page.dart';
 
@@ -35,12 +35,9 @@ class _HomePageState extends State<HomePage> {
           onPressed: () async {
             bloc.add(ToursLoadTour(tour: Tour.empty()));
             await Navigator.of(context).pushNamed(
-              routes.tourBuilderPage,
+              AppRouter.tourBuilderPage,
               arguments: HomePage.route,
             );
-            // await Navigator.of(context).push(MaterialPageRoute(
-            //   builder: (context) => const TourBuilderPage(),
-            // ));
             bloc.add(ToursLoadAll());
           },
           label: const Text('Add'),

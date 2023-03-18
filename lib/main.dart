@@ -7,7 +7,7 @@ import 'blocs/tours/tours_bloc.dart';
 import 'config/theme.dart';
 import 'repositories/auth_repository.dart';
 import 'repositories/tours_repository.dart';
-import 'routes.dart' as routes;
+import 'router.dart';
 
 // TODO
 // - Remove debug mode banner
