@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'blocs/auth/auth_bloc.dart';
 import 'blocs/tours/tours_bloc.dart';
 import 'config/theme.dart';
+import 'repositories/auth_repository.dart';
 import 'repositories/tours_repository.dart';
 import 'routes.dart' as routes;
 
@@ -15,21 +17,44 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(const TourBuilderApp());
+  final authRepo = AuthRepositoryImpl();
+  final isLogged = await authRepo.isLogged();
+  final initRoute = isLogged ? AppRouter.homePage : AppRouter.signInPage;
+
+  runApp(RepositoryProvider.value(
+    value: authRepo,
+    child: TourBuilderApp(initialRoute: initRoute),
+  ));
 }
 
 class TourBuilderApp extends StatefulWidget {
-  const TourBuilderApp({Key? key}) : super(key: key);
+  final String initialRoute;
+
+  const TourBuilderApp({Key? key, required this.initialRoute})
+      : super(key: key);
 
   @override
   State<TourBuilderApp> createState() => _TourBuilderAppState();
 }
 
 class _TourBuilderAppState extends State<TourBuilderApp> {
+  late AuthRepositoryImpl _authRepo;
+
+  @override
+  void initState() {
+    super.initState();
+    _authRepo = context.read<AuthRepositoryImpl>();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ToursBloc(toursRepository: FirebaseTourRepository()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthBloc(authRepo: _authRepo)),
+        BlocProvider(
+            create: (context) =>
+                ToursBloc(toursRepository: FirebaseTourRepository())),
+      ],
       child: MaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,
@@ -69,8 +94,8 @@ class _TourBuilderAppState extends State<TourBuilderApp> {
             foregroundColor: AppColors.black,
           ),
         ),
-        initialRoute: routes.homePage,
-        onGenerateRoute: routes.controller,
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        initialRoute: widget.initialRoute,
       ),
     );
   }
