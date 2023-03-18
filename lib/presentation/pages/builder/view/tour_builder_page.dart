@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/tours/tours.dart';
 import '../../../../repositories/models/models.dart';
-import '../../../../routes.dart' as routes;
+import '../../../../router.dart';
 import 'map_page.dart';
 import 'tour_details_page.dart';
 
 class TourBuilderPage extends StatefulWidget {
-  static const String route = '/tourBuilder';
+  static const String route = 'tourBuilder';
 
   const TourBuilderPage({Key? key}) : super(key: key);
 
@@ -80,7 +80,7 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
                   );
                   bloc.add(ToursSaveTour(tour: newTour));
                   Navigator.pop(context);
-                  bloc.add(prevRoute == routes.homePage
+                  bloc.add(prevRoute == AppRouter.homePage
                       ? ToursLoadAll()
                       : ToursLoadTour(tour: newTour));
                 }

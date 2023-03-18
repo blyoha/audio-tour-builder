@@ -8,7 +8,7 @@ import '../../../repositories/models/models.dart';
 import '../builder/view/view.dart';
 
 class TourPage extends StatefulWidget {
-  static const String route = '/tour';
+  static const String route = 'tour';
 
   const TourPage({Key? key}) : super(key: key);
 
