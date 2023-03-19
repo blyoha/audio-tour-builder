@@ -156,7 +156,7 @@ class _MapPageState extends State<MapPage> {
     Place? place;
     late TextEditingController titleCont;
     late TextEditingController descCont;
-    File audioFile;
+    File? audioFile;
 
     showDialog(
       context: context,
@@ -203,7 +203,7 @@ class _MapPageState extends State<MapPage> {
                           widget.places[key.value] = place!.copyWith(
                             title: titleCont.text,
                             description: descCont.text,
-                            // audio: audioFile,
+                            audio: audioFile,
                           );
 
                           Navigator.of(context).pop();

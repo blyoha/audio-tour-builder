@@ -53,7 +53,7 @@ class _TourBuilderAppState extends State<TourBuilderApp> {
         BlocProvider(create: (context) => AuthBloc(authRepo: _authRepo)),
         BlocProvider(
             create: (context) =>
-                ToursBloc(toursRepository: FirebaseTourRepository())),
+                ToursBloc(toursRepository: ToursRepositoryImpl())),
       ],
       child: MaterialApp(
         theme: ThemeData(

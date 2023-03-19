@@ -6,7 +6,7 @@ import 'tours_event.dart';
 import 'tours_state.dart';
 
 class ToursBloc extends Bloc<ToursEvent, ToursState> {
-  final FirebaseTourRepository toursRepository;
+  final ToursRepositoryImpl toursRepository;
 
   ToursBloc({required this.toursRepository}) : super(const ToursInitial()) {
     on<ToursLoadAll>(_onLoadAll);
