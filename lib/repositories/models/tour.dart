@@ -1,7 +1,7 @@
 import 'place.dart';
 
 class Tour {
-  final String? key;
+  final String? id;
   final String title;
   final String description;
   final double distance;
@@ -9,7 +9,7 @@ class Tour {
   final List<Place> places;
 
   Tour({
-    this.key,
+    this.id,
     required this.title,
     required this.description,
     required this.distance,
@@ -25,7 +25,7 @@ class Tour {
     }
 
     return Tour(
-      key: json['key'],
+      id: json['id'],
       title: json['title'],
       description: json['description'],
       places: places,
@@ -45,7 +45,7 @@ class Tour {
   }
 
   Tour copyWith({
-    String? key,
+    String? id,
     String? title,
     String? description,
     double? distance,
@@ -53,7 +53,7 @@ class Tour {
     List<Place>? places,
   }) {
     return Tour(
-      key: key ?? this.key,
+      id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       distance: distance ?? this.distance,
