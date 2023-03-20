@@ -271,6 +271,7 @@ class _MapPageState extends State<MapPage> {
                     child: const Text('Add'),
                     onPressed: () {
                       widget.places.add(Place(
+                        id: '${widget.places.length}',
                         title: title.text,
                         description: desc.text,
                         location: latLng,

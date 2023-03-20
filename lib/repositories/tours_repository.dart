@@ -37,7 +37,7 @@ class ToursRepositoryImpl implements ToursRepository {
   @override
   Future<List<Tour>> getAllTours() async {
     QuerySnapshot snapshot =
-    await _fireStore.doc(user).collection('tours').get();
+        await _fireStore.doc(user).collection('tours').get();
     if (snapshot.size == 0) {
       return List.empty();
     }
@@ -46,8 +46,9 @@ class ToursRepositoryImpl implements ToursRepository {
     for (var doc in snapshot.docs) {
       var tour = Tour.fromJson(doc.data() as Map);
       var placesRef = await doc.reference.collection('places').get();
-      var places =
-      placesRef.docs.map((place) => Place.fromJson(place.data())).toList();
+
+      List<Place> places =
+          placesRef.docs.map((doc) => Place.fromJson(doc.data())).toList();
 
       tour = tour.copyWith(
         id: doc.id,
@@ -72,8 +73,12 @@ class ToursRepositoryImpl implements ToursRepository {
     };
     await tourRef.set(data);
 
+    for (var doc in await placesRef.get().then((value) => value.docs)) {
+      await doc.reference.delete();
+    }
+
     for (var i = 0; i < tour.places.length; i++) {
-      var placeRef = placesRef.doc(tour.id);
+      var placeRef = placesRef.doc('$i');
 
       var data = {
         'title': tour.places[i].title,
