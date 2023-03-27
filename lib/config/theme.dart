@@ -9,11 +9,11 @@ class AppColors {
 }
 
 class AppTextStyles {
-  static TextStyle text1 = TextStyle(
+  static TextStyle text1 = const TextStyle(
     fontSize: 18,
   );
 
-  static TextStyle cardHeader = TextStyle(
+  static TextStyle cardHeader = const TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
