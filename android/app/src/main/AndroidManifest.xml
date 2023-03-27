@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.interview">
+    package="com.example.audioTourBuilder">
    <application
-        android:label="interview"
+        android:label="audioTourBuilder"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
