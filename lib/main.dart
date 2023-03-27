@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:interview/firebase_options.dart';
 
 import 'blocs/auth/auth_bloc.dart';
 import 'blocs/tours/tours_bloc.dart';
@@ -13,9 +14,11 @@ import 'router.dart';
 // - Remove debug mode banner
 // - Isolate ThemeData
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final authRepo = AuthRepositoryImpl();
   final isLogged = await authRepo.isLogged();
