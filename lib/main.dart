@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:interview/firebase_options.dart';
 
 import 'blocs/auth/auth_bloc.dart';
 import 'blocs/tours/tours_bloc.dart';
 import 'config/theme.dart';
+import 'firebase_options.dart';
 import 'repositories/auth_repository.dart';
 import 'repositories/tours_repository.dart';
 import 'router.dart';

@@ -1,6 +1,6 @@
 {
-    "name": "interview",
-    "short_name": "interview",
+    "name": "audioTourBuilder",
+    "short_name": "audioTourBuilder",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
