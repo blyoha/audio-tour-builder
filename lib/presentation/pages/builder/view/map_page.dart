@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../api_key.dart';
 import '../../../../blocs/tours/tours.dart';
@@ -64,8 +65,7 @@ class _MapPageState extends State<MapPage> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          _buildMap(),
-          // _showBottomSheet(),
+          _buildMap(), // _showBottomSheet(),
         ],
       ),
     );
@@ -189,6 +189,17 @@ class _MapPageState extends State<MapPage> {
 
                       if (data != null) {
                         audioFile = File(data.files.single.path!);
+                        var name = '';
+                        if (place!.audio != null) {
+                          name = place!.audio!.path.split(Platform.pathSeparator).last;
+                        } else {
+                          name = '${const Uuid().v4()}.mp3';
+                        }
+                        var lastSeparator = audioFile!.path
+                            .lastIndexOf(Platform.pathSeparator);
+                        var newPath =
+                            '${audioFile!.path.substring(0, lastSeparator + 1)}$name';
+                        audioFile = await audioFile!.rename(newPath);
                       } else {
                         // user cancelled the picker
                       }
@@ -240,7 +251,7 @@ class _MapPageState extends State<MapPage> {
       builder: (context) {
         final title = TextEditingController();
         final desc = TextEditingController();
-        late final File audioFile;
+        late File audioFile;
 
         return Dialog(
           insetPadding: const EdgeInsets.symmetric(
@@ -259,6 +270,13 @@ class _MapPageState extends State<MapPage> {
 
                   if (data != null) {
                     audioFile = File(data.files.single.path!);
+                    // TODO: use file name if exists
+                    var name ='${const Uuid().v4()}.mp3';
+                    var lastSeparator =
+                        audioFile.path.lastIndexOf(Platform.pathSeparator);
+                    var newPath =
+                        '${audioFile.path.substring(0, lastSeparator + 1)}$name';
+                    audioFile = await audioFile.rename(newPath);
                   } else {
                     // user cancelled the picker
                   }
@@ -270,13 +288,14 @@ class _MapPageState extends State<MapPage> {
                   MaterialButton(
                     child: const Text('Add'),
                     onPressed: () {
-                      widget.places.add(Place(
+                      var place = Place(
                         id: '${widget.places.length}',
                         title: title.text,
                         description: desc.text,
                         location: latLng,
-                        // audio: audioFile,
-                      ));
+                        audio: audioFile,
+                      );
+                      widget.places.add(place);
 
                       _addPoint(widget.places.length - 1, latLng);
 
