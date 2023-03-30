@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../config/theme.dart';
+import '../../../../config/theme.dart';
 
-
-class SearchBar extends StatefulWidget {
-  const SearchBar({Key? key}) : super(key: key);
+class SearchBarWidget extends StatefulWidget {
+  const SearchBarWidget({Key? key}) : super(key: key);
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<SearchBarWidget> createState() => _SearchBarWidgetState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _SearchBarWidgetState extends State<SearchBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
