@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../api_key.dart';
 import '../../../../blocs/tours/tours.dart';
-import '../../../../config/theme.dart';
+import '../../../../theme/theme.dart';
 import '../../../../repositories/models/models.dart';
 
 class MapPage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _MapPageState extends State<MapPage> {
     color: AppColors.primary,
     strokeWidth: 5.0,
     strokeCap: StrokeCap.square,
-    borderColor: AppColors.black,
+    borderColor: AppColors.primary,
     borderStrokeWidth: 3.0,
     points: [],
   );
@@ -117,7 +117,7 @@ class _MapPageState extends State<MapPage> {
           height: 40,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: AppColors.black, width: 2),
+            border: Border.all(color: AppColors.primary, width: 2),
             color: AppColors.primary,
           ),
         ),
@@ -125,7 +125,7 @@ class _MapPageState extends State<MapPage> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border:
-                Border.all(color: AppColors.black.withOpacity(.8), width: 2),
+                Border.all(color: AppColors.primary.withOpacity(.8), width: 2),
             color: AppColors.primary.withOpacity(.8),
           ),
         ),
@@ -136,7 +136,7 @@ class _MapPageState extends State<MapPage> {
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.black, width: 2),
+              border: Border.all(color: AppColors.primary, width: 2),
               color: AppColors.primary,
             ),
           ),
@@ -327,11 +327,11 @@ class _MapPageState extends State<MapPage> {
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.background,
             boxShadow: [
               BoxShadow(
                 blurRadius: 10,
-                color: AppColors.black.withOpacity(0.25),
+                color: AppColors.primary.withOpacity(0.25),
               )
             ],
             borderRadius: const BorderRadius.only(
@@ -344,7 +344,7 @@ class _MapPageState extends State<MapPage> {
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.black.withOpacity(.5),
+                  color: AppColors.primary.withOpacity(.5),
                   borderRadius: const BorderRadius.all(Radius.circular(15)),
                 ),
                 width: 45,
@@ -392,11 +392,11 @@ class _MapPageState extends State<MapPage> {
         boxShadow: [
           BoxShadow(
             blurRadius: 6.0,
-            color: AppColors.black.withOpacity(.25),
+            color: AppColors.primary.withOpacity(.25),
           ),
         ],
         borderRadius: BorderRadius.circular(10),
-        color: AppColors.white,
+        color: AppColors.background,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: 10,
@@ -406,7 +406,7 @@ class _MapPageState extends State<MapPage> {
         children: [
           Icon(
             Icons.circle_outlined,
-            color: AppColors.black,
+            color: AppColors.primary,
           ),
           const Gap(10),
           Text(place.title),

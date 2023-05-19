@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../config/theme.dart';
+import '../../../../theme/theme.dart';
 
 class SearchBarWidget extends StatefulWidget {
   const SearchBarWidget({Key? key}) : super(key: key);
@@ -20,13 +20,13 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               offset: const Offset(0, 2),
               blurRadius: 6.0,
               spreadRadius: -3,
-              color: AppColors.black.withOpacity(.25),
+              color: AppColors.primary.withOpacity(.25),
             ),
           ],
-          color: AppColors.white,
+          color: AppColors.background,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: AppColors.black.withOpacity(.25),
+            color: AppColors.primary.withOpacity(.25),
             width: 1,
           ),
         ),

@@ -1,5 +1,3 @@
-import 'package:audioTourBuilder/blocs/tours/tours.dart';
-import 'package:audioTourBuilder/repositories/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -39,7 +37,7 @@ class _TourCardWidgetState extends State<TourCardWidget> {
               offset: const Offset(0, 2),
               blurRadius: 6.0,
               spreadRadius: -6,
-              color: AppColors.black.withOpacity(.25),
+              color: AppColors.primary.withOpacity(.25),
             ),
           ],
           borderRadius: BorderRadius.circular(10),

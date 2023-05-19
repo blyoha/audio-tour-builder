@@ -1,3 +1,3 @@
+export 'builder_page.dart';
+export 'details_page.dart';
 export 'map_page.dart';
-export 'tour_builder_page.dart';
-export 'tour_details_page.dart';

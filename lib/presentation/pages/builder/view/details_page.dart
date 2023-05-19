@@ -3,26 +3,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../blocs/tours/tours.dart';
-import '../../../../config/theme.dart';
+import '../../../../theme/theme.dart';
 import '../../../../repositories/models/models.dart';
 
-class TourDetailsPage extends StatefulWidget {
-  static const String route = 'tourDetails';
+class DetailsPage extends StatefulWidget {
+  static const String route = 'details';
 
   final TextEditingController titleController;
   final TextEditingController descController;
 
-  const TourDetailsPage({
+  const DetailsPage({
     Key? key,
     required this.titleController,
     required this.descController,
   }) : super(key: key);
 
   @override
-  State<TourDetailsPage> createState() => _TourDetailsPageState();
+  State<DetailsPage> createState() => _DetailsPageState();
 }
 
-class _TourDetailsPageState extends State<TourDetailsPage> {
+class _DetailsPageState extends State<DetailsPage> {
   late Tour tour;
   late ToursBloc bloc;
 

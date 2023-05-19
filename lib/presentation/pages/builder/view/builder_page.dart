@@ -5,18 +5,18 @@ import '../../../../blocs/tours/tours.dart';
 import '../../../../repositories/models/models.dart';
 import '../../../../router.dart';
 import 'map_page.dart';
-import 'tour_details_page.dart';
+import 'details_page.dart';
 
-class TourBuilderPage extends StatefulWidget {
-  static const String route = 'tourBuilder';
+class BuilderPage extends StatefulWidget {
+  static const String route = 'builder';
 
-  const TourBuilderPage({Key? key}) : super(key: key);
+  const BuilderPage({Key? key}) : super(key: key);
 
   @override
-  State<TourBuilderPage> createState() => _TourBuilderPageState();
+  State<BuilderPage> createState() => _BuilderPageState();
 }
 
-class _TourBuilderPageState extends State<TourBuilderPage> {
+class _BuilderPageState extends State<BuilderPage> {
   final titleController = TextEditingController();
   final descController = TextEditingController();
 
@@ -89,7 +89,7 @@ class _TourBuilderPageState extends State<TourBuilderPage> {
             ),
             body: TabBarView(
               children: [
-                TourDetailsPage(
+                DetailsPage(
                   titleController: titleController,
                   descController: descController,
                 ),

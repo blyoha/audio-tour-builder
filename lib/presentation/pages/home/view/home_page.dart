@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../blocs/tours/tours.dart';
-import '../../../../config/theme.dart';
+import '../../../../theme/theme.dart';
 import '../../../../repositories/models/models.dart';
 import '../../../../router.dart';
 import '../widgets/search_bar_widget.dart';
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () async {
             bloc.add(ToursLoadTour(tour: Tour.empty()));
             await Navigator.of(context).pushNamed(
-              AppRouter.tourBuilderPage,
+              AppRouter.builderPage,
               arguments: HomePage.route,
             );
           },

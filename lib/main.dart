@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/auth/auth_bloc.dart';
 import 'blocs/tours/tours_bloc.dart';
-import 'config/theme.dart';
+import 'theme/theme.dart';
 import 'firebase_options.dart';
 import 'repositories/auth_repository.dart';
 import 'repositories/tours_repository.dart';

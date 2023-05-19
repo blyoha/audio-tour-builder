@@ -73,7 +73,7 @@ class _TourPageState extends State<TourPage> {
                             color: Colors.white70,
                             onPressed: () async {
                               await Navigator.of(context).pushNamed(
-                                TourBuilderPage.route,
+                                BuilderPage.route,
                                 arguments: TourPage.route,
                               );
                               // Navigator.of(context).push(MaterialPageRoute(
@@ -83,7 +83,7 @@ class _TourPageState extends State<TourPage> {
                             },
                             child: Icon(
                               Icons.edit,
-                              color: AppColors.black,
+                              color: AppColors.primary,
                             ),
                           ),
                           MaterialButton(
@@ -94,7 +94,7 @@ class _TourPageState extends State<TourPage> {
                             },
                             child: Icon(
                               Icons.delete,
-                              color: AppColors.black,
+                              color: AppColors.primary,
                             ),
                           ),
                         ],
@@ -169,7 +169,7 @@ class _TourPageState extends State<TourPage> {
           Text(
             title,
             style: TextStyle(
-              color: AppColors.black,
+              color: AppColors.primary,
               fontWeight: FontWeight.bold,
               fontSize: 24,
             ),
