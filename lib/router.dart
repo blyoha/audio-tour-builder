@@ -33,6 +33,13 @@ class AppRouter {
               const BuilderPage(),
         );
 
+      case routingPage:
+        final args = settings.arguments as Tour;
+        return MaterialPageRoute(builder: (context) => RoutingPage(tour: args));
+
+      case accountPage:
+        return MaterialPageRoute(builder: (context) => const AccountPage());
+
       default:
         throw ('Unknown route: ${settings.name}');
     }
