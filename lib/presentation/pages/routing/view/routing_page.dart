@@ -50,21 +50,27 @@ class _RoutingPageState extends State<RoutingPage> {
             bloc.add(RoutingGoToNextPlace());
           },
         ),
-        body: BlocListener<RoutingBloc, RoutingState>(
+        body: BlocConsumer<RoutingBloc, RoutingState>(
           listener: (context, state) {
             if (state is RoutingFinished) {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("Tour finished"),
                 duration: Duration(seconds: 1),
               ));
+              Navigator.pop(context);
             }
           },
-          child: Stack(
-            children: [
-              RouteMap(tour: widget.tour),
-              RouteSheet(places: widget.tour.places),
-            ],
-          ),
+          builder: (context, state) {
+            if (state is RoutingLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return Stack(
+              children: [
+                RouteMap(tour: widget.tour),
+                RouteSheet(places: widget.tour.places),
+              ],
+            );
+          },
         ),
       ),
     );
