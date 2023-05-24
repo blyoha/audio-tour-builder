@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../theme/theme_constants.dart';
-import '../widgets/explore_list.dart';
+import '../widgets/tours_list.dart';
 
 class ExplorePage extends StatelessWidget {
   static const String route = "explore";
@@ -36,7 +36,7 @@ class ExplorePage extends StatelessWidget {
               },
               triggerMode: RefreshIndicatorTriggerMode.onEdge,
               color: primaryColor,
-              child: const ExploreList(),
+              child: const ToursList(),
             ),
           ],
         ),

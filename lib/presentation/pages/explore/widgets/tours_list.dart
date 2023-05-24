@@ -6,10 +6,8 @@ import '../../../../repositories/models/place.dart';
 import '../../../../repositories/models/tour.dart';
 import 'tour_card.dart';
 
-class ExploreList extends StatelessWidget {
-  static const String route = 'explore';
-
-  const ExploreList({Key? key}) : super(key: key);
+class ToursList extends StatelessWidget {
+  const ToursList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
