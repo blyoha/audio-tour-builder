@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 
 import '../../../../blocs/tours/tours.dart';
-import '../../../../theme/theme.dart';
-import '../../../../repositories/models/models.dart';
-import '../../../../router.dart';
-import '../widgets/search_bar_widget.dart';
-import '../widgets/tour_list_widget.dart';
+import '../../../../theme/theme_constants.dart';
+import '../../../my_tours/view/my_tours_page.dart';
+import '../../explore/view/explore_page.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = 'home';
@@ -19,6 +16,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+  final List<Widget> pages = const [ExplorePage(), MyToursPage()];
+
   late ToursBloc bloc;
 
   @override
@@ -31,59 +31,59 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('My Tours'),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () async {
-            bloc.add(ToursLoadTour(tour: Tour.empty()));
-            await Navigator.of(context).pushNamed(
-              AppRouter.builderPage,
-              arguments: HomePage.route,
-            );
-          },
-          label: const Text('Add'),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Column(
-            children: [
-              const SearchBarWidget(),
-              BlocBuilder<ToursBloc, ToursState>(
-                bloc: bloc,
-                builder: (context, state) {
-                  if (state is ToursLoading) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20.0),
-                      child:
-                          CircularProgressIndicator(color: AppColors.primary),
-                    );
-                  }
-                  if (state is ToursAllLoaded) {
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        bloc.add(ToursLoadAll());
-                      },
-                      child: TourListWidget(tourList: state.tours),
-                    );
-                  }
-                  if (state is ToursError) {
-                    return Center(
-                      child: Column(
-                        children: [
-                          const Text('Loading error!'),
-                          const Gap(5),
-                          Text(state.error),
-                        ],
-                      ),
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ],
+      bottomNavigationBar: _buildNavBar(),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: pages,
+      ),
+    );
+  }
+
+  Widget _buildNavBar() {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(15.0),
+            topRight: Radius.circular(15.0),
           ),
-        ));
+          boxShadow: [
+            BoxShadow(
+              color: primaryTextColor.withOpacity(0.2),
+              offset: const Offset(0, 0),
+              blurRadius: 8.0,
+            )
+          ]),
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        iconSize: 0.0,
+        fixedColor: primaryTextColor,
+        backgroundColor: Colors.white,
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20.0,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 16.0,
+        ),
+        currentIndex: _currentIndex,
+        onTap: (value) {
+          setState(() {
+            _currentIndex = value;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.south_america_outlined),
+            label: "Explore",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.storage_outlined),
+            label: "My tours",
+          ),
+        ],
+      ),
+    );
   }
 }
