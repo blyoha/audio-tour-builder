@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'presentation/pages/auth/view/sign_in_page.dart';
 import 'presentation/pages/builder/view/builder_page.dart';
+import 'presentation/pages/explore/view/explore_page.dart';
 import 'presentation/pages/home/view/home_page.dart';
 import 'presentation/pages/routing/view/routing_page.dart';
 import 'presentation/pages/splash/splash_screen.dart';
@@ -12,6 +13,7 @@ class AppRouter {
   static const String splashScreen = SplashScreen.route;
   static const String signInPage = SignInPage.route;
   static const String homePage = HomePage.route;
+  static const String explorePage = ExplorePage.route;
   static const String tourPage = TourPage.route;
   static const String builderPage = BuilderPage.route;
   static const String routingPage = RoutingPage.route;
@@ -41,6 +43,9 @@ class AppRouter {
       case routingPage:
         final args = settings.arguments as Tour;
         return MaterialPageRoute(builder: (context) => RoutingPage(tour: args));
+
+      case explorePage:
+        return MaterialPageRoute(builder: (context) => const ExplorePage());
 
       case accountPage:
         return MaterialPageRoute(builder: (context) => const AccountPage());
