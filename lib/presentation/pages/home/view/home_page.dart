@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/tours/tours.dart';
 import '../../../../theme/theme_constants.dart';
-import '../../../my_tours/view/my_tours_page.dart';
 import '../../explore/view/explore_page.dart';
+import '../../my_tours/view/my_tours_page.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = 'home';
@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     bloc = context.read();
-    bloc.add(ToursLoadAll());
   }
 
   @override
