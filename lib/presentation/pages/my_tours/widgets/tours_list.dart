@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../repositories/models/models.dart';
-import '../../pages/tour/view/tour_page.dart';
+import '../../../../repositories/models/models.dart';
+import '../../tour/view/tour_page.dart';
 import 'tour_card.dart';
 
 class ToursList extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../theme/theme_constants.dart';
+import '../../../../theme/theme_constants.dart';
 import '../widgets/tours_list.dart';
 
 class MyToursPage extends StatefulWidget {

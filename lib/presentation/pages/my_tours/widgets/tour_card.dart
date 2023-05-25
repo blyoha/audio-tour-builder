@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../repositories/models/tour.dart';
-import '../../../theme/theme_constants.dart';
+import '../../../../repositories/models/tour.dart';
+import '../../../../theme/theme_constants.dart';
 
 class TourCard extends StatelessWidget {
   final Tour tour;
