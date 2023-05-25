@@ -1,11 +1,8 @@
+import 'package:audioTourBuilder/presentation/pages/builder/widgets/tab_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../blocs/tours/tours.dart';
-import '../../../../repositories/models/models.dart';
-import '../../../../router.dart';
-import 'map_page.dart';
-import 'details_page.dart';
+import '../widgets/details_tab.dart';
+import '../widgets/map_tab.dart';
 
 class BuilderPage extends StatefulWidget {
   static const String route = 'builder';
@@ -20,85 +17,54 @@ class _BuilderPageState extends State<BuilderPage> {
   final titleController = TextEditingController();
   final descController = TextEditingController();
 
-  late ToursBloc bloc;
-
-  @override
-  void initState() {
-    super.initState();
-    bloc = context.read();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final prevRoute = ModalRoute.of(context)!.settings.arguments as String;
-    late List<Place> places;
-    late Tour newTour;
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: _buildAppBar(),
+        floatingActionButton: FloatingActionButton.extended(
+          heroTag: 'save',
+          onPressed: () {
+            if (titleController.text.isEmpty | descController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Empty text fields!')),
+              );
+            } else {}
+          },
+          label: const Text('Save Tour'),
+        ),
+        body: _buildView(),
+      ),
+    );
+  }
 
-    return BlocBuilder(
-      bloc: bloc,
-      builder: (context, state) {
-        if (state is ToursTourLoaded) {
-          newTour = state.tour.copyWith();
-          places = List.from(newTour.places);
-        }
-        titleController.text = newTour.title;
-        descController.text = newTour.description;
+  Widget _buildView() {
+    return TabBarView(
+      children: [
+        DetailsTab(
+          titleController: titleController,
+          descController: descController,
+        ),
+        MapTab(),
+      ],
+    );
+  }
 
-        return DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              title: const Text('Create a tour'),
-              bottom: const TabBar(tabs: [
-                Tab(child: Text('Details')),
-                Tab(child: Text('Map')),
-              ]),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_outlined),
-                onPressed: () async {
-                  if (state is ToursTourLoaded) {
-                    bloc.add(ToursLoadTour(tour: state.tour));
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ),
-            floatingActionButton: FloatingActionButton.extended(
-              heroTag: 'save',
-              onPressed: () {
-                if (titleController.text.isEmpty |
-                    descController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Empty text fields!')),
-                  );
-                } else {
-                  newTour = newTour.copyWith(
-                    title: titleController.text,
-                    description: descController.text,
-                    places: places,
-                  );
-                  bloc.add(ToursSaveTour(tour: newTour));
-                  Navigator.pop(context);
-                  bloc.add(prevRoute == AppRouter.homePage
-                      ? ToursLoadAll()
-                      : ToursLoadTour(tour: newTour));
-                }
-              },
-              label: const Text('Save Tour'),
-            ),
-            body: TabBarView(
-              children: [
-                DetailsPage(
-                  titleController: titleController,
-                  descController: descController,
-                ),
-                MapPage(places: places),
-              ],
-            ),
-          ),
-        );
-      },
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: const Text('Create tour'),
+      bottom: const TabView(tabs: [
+        Tab(height: 35, child: Text('Details')),
+        Tab(height: 35, child: Text('Map')),
+      ]),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
     );
   }
 }
