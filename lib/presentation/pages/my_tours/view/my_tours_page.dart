@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../repositories/models/tour.dart';
+import '../../../../repositories/tours_repository.dart';
 import '../../../../theme/theme_constants.dart';
 import '../widgets/tours_list.dart';
 
@@ -13,20 +16,24 @@ class MyToursPage extends StatefulWidget {
 }
 
 class _MyToursPageState extends State<MyToursPage> {
+  late final ToursRepositoryImpl repo;
+  List<Tour> tours = [];
+  List<Tour> visibleList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    repo = context.read();
+    _refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(title: const Text("My Tours")),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          print("create new tour");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      const Center(child: Text("CREATOR PAGE"))));
-        },
+        onPressed: () => Navigator.of(context).pushNamed("builder"),
         label: const Text("Create"),
       ),
       body: Padding(
@@ -34,22 +41,36 @@ class _MyToursPageState extends State<MyToursPage> {
           horizontal: 12.0,
           vertical: 8.0,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  print("refreshed");
-                },
-                triggerMode: RefreshIndicatorTriggerMode.onEdge,
-                color: primaryColor,
-                child: const ToursList(),
-              ),
-            ),
-          ],
-        ),
+        child: tours.isEmpty ? _showEmptySpace() : _showList(),
       ),
     );
+  }
+
+  Widget _showEmptySpace() {
+    return Center(
+      child: Text(
+        "No tours here :(",
+        style: Theme.of(context)
+            .textTheme
+            .titleMedium
+            ?.copyWith(color: secondaryTextColor),
+      ),
+    );
+  }
+
+  Widget _showList() {
+    return RefreshIndicator(
+      onRefresh: _refresh,
+      triggerMode: RefreshIndicatorTriggerMode.onEdge,
+      color: primaryColor,
+      child: ToursList(tours: visibleList),
+    );
+  }
+
+  Future<void> _refresh() async {
+    final fetched = await repo.getAllTours();
+    tours = fetched;
+    visibleList = tours;
+    setState(() {});
   }
 }
