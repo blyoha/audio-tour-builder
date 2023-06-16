@@ -8,10 +8,37 @@ const primaryTextColor = Color(0xFF101010);
 const secondaryTextColor = Color(0xFF959595);
 
 ThemeData lightTheme = ThemeData(
+  snackBarTheme: SnackBarThemeData(
+    backgroundColor: errorColor,
+    elevation: 4.0,
+    behavior: SnackBarBehavior.floating,
+    contentTextStyle: const TextStyle(
+      color: Colors.white,
+      fontSize: 20.0,
+    ),
+    insetPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4.0),
+    ),
+  ),
   brightness: Brightness.light,
   primaryColor: primaryColor,
+  scaffoldBackgroundColor: backgroundColor,
   splashColor: Colors.transparent,
   highlightColor: Colors.transparent,
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    backgroundColor: Colors.white,
+    elevation: 0.0,
+    type: BottomNavigationBarType.fixed,
+    selectedLabelStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 20.0,
+    ),
+    unselectedLabelStyle: TextStyle(
+      fontWeight: FontWeight.normal,
+      fontSize: 16.0,
+    ),
+  ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: primaryColor,
     foregroundColor: primaryTextColor,
@@ -61,6 +88,22 @@ ThemeData lightTheme = ThemeData(
     foregroundColor: primaryTextColor,
     backgroundColor: backgroundColor,
   ),
+  tabBarTheme: TabBarTheme(
+    labelColor: primaryTextColor,
+    unselectedLabelColor: primaryTextColor,
+    labelStyle: const TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 16.0,
+    ),
+    unselectedLabelStyle: const TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 16.0,
+    ),
+    indicator: BoxDecoration(
+      color: primaryColor.withOpacity(0.5),
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+  ),
   textButtonTheme: TextButtonThemeData(
     style: TextButton.styleFrom(
       backgroundColor: primaryColor,
@@ -107,6 +150,13 @@ ThemeData lightTheme = ThemeData(
       fontWeight: FontWeight.w600,
     ),
   ),
+  dialogTheme: const DialogTheme(
+    elevation: 4.0,
+    backgroundColor: backgroundColor,
+    alignment: Alignment.center,
+    actionsPadding: const EdgeInsets.symmetric(),
+  ),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(color: primaryColor),
 );
 
 ThemeData darkTheme = ThemeData(brightness: Brightness.dark);

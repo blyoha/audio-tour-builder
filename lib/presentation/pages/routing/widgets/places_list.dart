@@ -1,9 +1,9 @@
-import 'package:audioTourBuilder/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/routing/routing_bloc.dart';
 import '../../../../repositories/models/place.dart';
+import '../../../../theme/theme_constants.dart';
 import 'place_info_sheet.dart';
 
 class PlacesList extends StatefulWidget {
@@ -28,7 +28,7 @@ class _PlacesListState extends State<PlacesList> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: ListView.separated(
@@ -42,7 +42,7 @@ class _PlacesListState extends State<PlacesList> {
         },
         separatorBuilder: (context, index) => Divider(
           height: 1,
-          color: AppColors.textPrimary.withOpacity(0.3),
+          color: primaryTextColor.withOpacity(0.3),
         ),
       ),
     );

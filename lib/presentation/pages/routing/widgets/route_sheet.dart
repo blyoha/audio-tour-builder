@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../blocs/routing/routing_bloc.dart';
 import '../../../../repositories/models/place.dart';
+import '../../../../theme/theme_constants.dart';
 import 'places_list.dart';
 import 'player.dart';
 import 'resize_indicator.dart';
@@ -55,7 +56,8 @@ class _RouteSheetState extends State<RouteSheet> {
                       children: [
                         Expanded(
                           child: TextButton(
-                            child: const Text("END TOUR"),
+                            style: TextButton.styleFrom(
+                                backgroundColor: errorColor),
                             onPressed: () {
                               bloc.add(RoutingFinish());
                             },

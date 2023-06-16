@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../blocs/routing/routing_bloc.dart';
 import '../../../../repositories/location_repository.dart';
 import '../../../../repositories/models/tour.dart';
+import '../../../../theme/theme_constants.dart';
 import '../../routing/view/routing_page.dart';
 import '../widgets/sliver_content.dart';
 
@@ -22,7 +23,6 @@ class TourPage extends StatelessWidget {
         heroTag: "start",
         label: const Text("Start Tour"),
         onPressed: () {
-          print("start tour");
           final route = MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => RoutingBloc(

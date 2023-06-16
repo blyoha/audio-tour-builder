@@ -9,10 +9,8 @@ import 'firebase_options.dart';
 import 'repositories/auth_repository.dart';
 import 'repositories/tours_repository.dart';
 import 'router.dart';
-
-// TODO
-// - Remove debug mode banner
-// - Isolate ThemeData
+import 'theme/theme_constants.dart';
+import 'theme/theme_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +27,8 @@ Future<void> main() async {
     child: TourBuilderApp(initialRoute: initRoute),
   ));
 }
+
+ThemeManager _themeManager = ThemeManager();
 
 class TourBuilderApp extends StatefulWidget {
   final String initialRoute;

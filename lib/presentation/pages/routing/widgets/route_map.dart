@@ -5,11 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../blocs/routing/routing_bloc.dart';
-import '../../../../repositories/models/models.dart';
-
-const mapsApiKey = '578c2399-45e0-47fe-8176-d6fcdaeb07e9';
-const urlTemplate =
-    'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png';
+import '../../../../repositories/models/tour.dart';
+import '../../../../theme/theme_constants.dart';
+import 'place_marker.dart';
 
 class RouteMap extends StatefulWidget {
   final Tour tour;
