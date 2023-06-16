@@ -29,10 +29,7 @@ class _RoutingPageState extends State<RoutingPage> {
   @override
   void initState() {
     super.initState();
-    bloc = RoutingBloc(
-      places: widget.tour.places,
-      locationRepository: LocationRepository(),
-    );
+    bloc = context.read();
     bloc.add(RoutingStart());
 
     askPermission();
@@ -40,7 +37,7 @@ class _RoutingPageState extends State<RoutingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
+    return BlocProvider<RoutingBloc>.value(
       value: bloc,
       child: Scaffold(
         backgroundColor: Colors.white60,

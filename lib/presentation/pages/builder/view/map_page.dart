@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -10,9 +9,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../api_key.dart';
-import '../../../../blocs/tours/tours.dart';
-import '../../../../theme/theme.dart';
+import '../../../../blocs/builder/builder_bloc.dart';
 import '../../../../repositories/models/models.dart';
+import '../../../../theme/theme.dart';
 
 class MapPage extends StatefulWidget {
   static const String route = 'map';
@@ -65,7 +64,7 @@ class _MapPageState extends State<MapPage> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          _buildMap(), // _showBottomSheet(),
+          _buildMap(),
         ],
       ),
     );
@@ -73,13 +72,13 @@ class _MapPageState extends State<MapPage> {
 
   Widget _buildMap() {
     return BlocBuilder(
-      bloc: context.read<ToursBloc>(),
+      bloc: context.read<BuilderBloc>(),
       builder: (context, state) {
-        if (state is ToursTourLoaded) {
+        if (state is BuilderEditing) {
           _markers.clear();
           widget.places
               .asMap()
-              .forEach((key, value) => _addPoint(key, value.location));
+              .forEach((key, value) => _addPoint(key, value.location!));
         }
 
         return DragTarget<int>(
@@ -162,9 +161,9 @@ class _MapPageState extends State<MapPage> {
       context: context,
       builder: (context) {
         return BlocBuilder(
-          bloc: context.read<ToursBloc>(),
+          bloc: context.read<BuilderBloc>(),
           builder: (context, state) {
-            if (state is ToursTourLoaded) {
+            if (state is BuilderEditing) {
               place = widget.places.asMap()[key.value];
 
               titleCont = TextEditingController(text: place?.title);
@@ -191,12 +190,14 @@ class _MapPageState extends State<MapPage> {
                         audioFile = File(data.files.single.path!);
                         var name = '';
                         if (place!.audio != null) {
-                          name = place!.audio!.path.split(Platform.pathSeparator).last;
+                          name = place!.audio!.path
+                              .split(Platform.pathSeparator)
+                              .last;
                         } else {
                           name = '${const Uuid().v4()}.mp3';
                         }
-                        var lastSeparator = audioFile!.path
-                            .lastIndexOf(Platform.pathSeparator);
+                        var lastSeparator =
+                            audioFile!.path.lastIndexOf(Platform.pathSeparator);
                         var newPath =
                             '${audioFile!.path.substring(0, lastSeparator + 1)}$name';
                         audioFile = await audioFile!.rename(newPath);
@@ -271,7 +272,7 @@ class _MapPageState extends State<MapPage> {
                   if (data != null) {
                     audioFile = File(data.files.single.path!);
                     // TODO: use file name if exists
-                    var name ='${const Uuid().v4()}.mp3';
+                    var name = '${const Uuid().v4()}.mp3';
                     var lastSeparator =
                         audioFile.path.lastIndexOf(Platform.pathSeparator);
                     var newPath =
@@ -289,7 +290,7 @@ class _MapPageState extends State<MapPage> {
                     child: const Text('Add'),
                     onPressed: () {
                       var place = Place(
-                        id: '${widget.places.length}',
+                        key: widget.places.length,
                         title: title.text,
                         description: desc.text,
                         location: latLng,
@@ -352,9 +353,9 @@ class _MapPageState extends State<MapPage> {
               ),
               const Gap(8),
               BlocBuilder(
-                bloc: context.read<ToursBloc>(),
+                bloc: context.read<BuilderBloc>(),
                 builder: (context, state) {
-                  if (state is ToursTourLoaded) {
+                  if (state is BuilderEditing) {
                     return Expanded(
                       child: widget.places.isEmpty
                           ? const SizedBox(
@@ -409,7 +410,7 @@ class _MapPageState extends State<MapPage> {
             color: AppColors.primary,
           ),
           const Gap(10),
-          Text(place.title),
+          Text(place.title!),
         ],
       ),
     );

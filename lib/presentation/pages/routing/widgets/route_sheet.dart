@@ -20,7 +20,7 @@ class RouteSheet extends StatefulWidget {
 class _RouteSheetState extends State<RouteSheet> {
   @override
   Widget build(BuildContext context) {
-    final RoutingBloc bloc = context.read();
+    final RoutingBloc bloc = context.read<RoutingBloc>();
 
     return DraggableScrollableSheet(
       minChildSize: 0.2,

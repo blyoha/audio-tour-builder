@@ -1,13 +1,20 @@
-import 'package:audioTourBuilder/presentation/pages/builder/widgets/tab_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/details_tab.dart';
-import '../widgets/map_tab.dart';
+import '../../../../blocs/builder/builder_bloc.dart';
+import '../../../../repositories/location_repository.dart';
+import '../../../../repositories/models/tour.dart';
+import '../../../../repositories/tours_repository.dart';
+import '../widgets/details_tab/details_tab.dart';
+import '../widgets/map_tab/map_tab.dart';
+import '../widgets/tab_view.dart';
 
 class BuilderPage extends StatefulWidget {
   static const String route = 'builder';
 
-  const BuilderPage({Key? key}) : super(key: key);
+  final Tour tour;
+
+  const BuilderPage({Key? key, required this.tour}) : super(key: key);
 
   @override
   State<BuilderPage> createState() => _BuilderPageState();
@@ -16,26 +23,71 @@ class BuilderPage extends StatefulWidget {
 class _BuilderPageState extends State<BuilderPage> {
   final titleController = TextEditingController();
   final descController = TextEditingController();
+  late final BuilderBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Tour tour = widget.tour;
+    bloc = BuilderBloc(
+      toursRepo: ToursRepository(),
+      locationRepo: LocationRepository(),
+    );
+    bloc.add(BuilderLoad(tour: tour));
+
+    titleController.text = tour.title;
+    descController.text = tour.description;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: _buildAppBar(),
-        floatingActionButton: FloatingActionButton.extended(
-          heroTag: 'save',
-          onPressed: () {
-            if (titleController.text.isEmpty | descController.text.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Empty text fields!')),
+    return BlocProvider<BuilderBloc>.value(
+      value: bloc,
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: _buildAppBar(),
+          floatingActionButton: BlocBuilder<BuilderBloc, BuilderState>(
+            bloc: bloc,
+            builder: (context, state) {
+
+              final label = (state is BuilderEditing)
+                  ? const Text('Save')
+                  : const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    );
+
+              return FloatingActionButton.extended(
+                heroTag: 'save',
+                onPressed: () {
+                  final title = titleController.text;
+                  final desc = descController.text;
+
+                  if (state is BuilderEditing) {
+                    if (title.isEmpty | desc.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Empty text fields!')),
+                      );
+                    } else {
+                      final tour = state.tour.copyWith(
+                        title: title,
+                        description: desc,
+                      );
+
+                      bloc.add(BuilderSave(tour: tour));
+                    }
+                  }
+                },
+                label: label,
               );
-            } else {}
-          },
-          label: const Text('Save Tour'),
+            },
+          ),
+          body: _buildView(),
         ),
-        body: _buildView(),
       ),
     );
   }
@@ -47,7 +99,7 @@ class _BuilderPageState extends State<BuilderPage> {
           titleController: titleController,
           descController: descController,
         ),
-        MapTab(),
+        const MapTab(),
       ],
     );
   }

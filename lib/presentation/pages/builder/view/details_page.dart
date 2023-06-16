@@ -1,10 +1,10 @@
+import 'package:audioTourBuilder/blocs/builder/builder_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../blocs/tours/tours.dart';
-import '../../../../theme/theme.dart';
 import '../../../../repositories/models/models.dart';
+import '../../../../theme/theme.dart';
 
 class DetailsPage extends StatefulWidget {
   static const String route = 'details';
@@ -24,7 +24,7 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   late Tour tour;
-  late ToursBloc bloc;
+  late BuilderBloc bloc;
 
   @override
   void initState() {
