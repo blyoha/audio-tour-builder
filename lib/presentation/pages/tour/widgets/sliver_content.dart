@@ -114,7 +114,7 @@ class PlacesList extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         separatorBuilder: (context, index) => const Gap(8.0),
         itemBuilder: (context, index) => Text(
-          places[index].title,
+          places[index].title!,
         ),
       ),
     );

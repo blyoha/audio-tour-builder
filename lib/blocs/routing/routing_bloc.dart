@@ -76,7 +76,7 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
   }
 
   int currentPlace() {
-    return _iterator.current.id as int;
+    return _iterator.current.key as int;
   }
 
   bool _checkPermission() {

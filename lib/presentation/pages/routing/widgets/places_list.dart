@@ -65,7 +65,7 @@ class PlaceTile extends StatelessWidget {
         final icon = _icon(currentPlaceId == place.key);
 
         return ListTile(
-          title: Text(place.title),
+          title: Text(place.title!),
           leading: icon,
           onTap: () => showModalBottomSheet(
             context: context,
@@ -76,8 +76,8 @@ class PlaceTile extends StatelessWidget {
               ),
             ),
             builder: (context) => PlaceInfoSheet(
-              title: place.title,
-              description: place.description ?? "No description",
+              title: place.title!,
+              description: place.description!,
             ),
           ),
         );

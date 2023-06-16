@@ -3,18 +3,20 @@ import 'dart:io';
 import 'package:latlong2/latlong.dart';
 
 class Place {
-  final String? id;
-  final String title;
-  final String description;
-  final LatLng location;
+  final int? key;
+  final String? title;
+  final String? description;
+  final LatLng? location;
   final File? audio;
+  final String? audioUri;
 
   Place({
-    this.id,
-    required this.title,
-    required this.description,
-    required this.location,
+    this.key,
+    this.title,
+    this.description,
+    this.location,
     this.audio,
+    this.audioUri,
   });
 
   factory Place.fromJson(Map<dynamic, dynamic> json) {
@@ -24,7 +26,7 @@ class Place {
     );
 
     return Place(
-      id: json['id'],
+      key: json['key'],
       title: json['title'],
       description: json['description'],
       location: location,
@@ -33,18 +35,30 @@ class Place {
   }
 
   Place copyWith({
-    String? id,
+    int? key,
     String? title,
     String? description,
     LatLng? location,
     File? audio,
+    String? audioUri,
   }) {
     return Place(
-      id: id ?? this.id,
+      key: key ?? this.key,
       title: title ?? this.title,
       description: description ?? this.description,
       location: location ?? this.location,
       audio: audio ?? this.audio,
+      audioUri: audioUri ?? this.audioUri,
     );
+  }
+
+  @override
+  String toString() {
+    return "$key. Place $title | $location";
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return (key == (other as Place).key);
   }
 }
