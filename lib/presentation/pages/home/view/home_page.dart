@@ -19,21 +19,21 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final List<Widget> pages = const [ExplorePage(), MyToursPage()];
 
-  late ToursBloc bloc;
-
   @override
   void initState() {
     super.initState();
-    bloc = context.read();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _buildNavBar(),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: pages,
+      body: RepositoryProvider<ToursRepository>(
+        create: (context) => ToursRepository(),
+        child: IndexedStack(
+          index: _currentIndex,
+          children: pages,
+        ),
       ),
     );
   }
