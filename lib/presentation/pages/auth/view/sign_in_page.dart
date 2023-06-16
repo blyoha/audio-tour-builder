@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 import '../../../../blocs/auth/auth_bloc.dart';
-import '../../../../theme/theme.dart';
 import '../../../../router.dart';
+import '../../../../theme/theme.dart';
+import '../../../widgets/input_field.dart';
 
 class SignInPage extends StatefulWidget {
   static const String route = 'signIn';
@@ -49,22 +51,35 @@ class _SignInPageState extends State<SignInPage> {
           if (state is AuthUnauthenticated) {
             return Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
+                horizontal: 24.0,
+                vertical: 8.0,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextField(controller: email),
-                  TextField(controller: password),
-                  MaterialButton(
+                  Text(
+                    "Sing In",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const Gap(16.0),
+                  InputField(
+                    controller: email,
+                    hint: "Your email",
+                  ),
+                  const Gap(12.0),
+                  InputField(
+                    controller: password,
+                    hint: "Your password",
+                    obscure: true,
+                  ),
+                  const Gap(16.0),
+                  TextButton(
                     onPressed: () {
                       authBloc.add(AuthSignIn(
                         email: email.text,
                         password: password.text,
                       ));
                     },
-                    color: AppColors.primary,
                     child: const Text('Sign In'),
                   ),
                 ],
