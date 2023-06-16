@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../blocs/tours/tours.dart';
+import '../../../../repositories/tours_repository.dart';
 import '../../../../theme/theme_constants.dart';
 import '../../explore/view/explore_page.dart';
 import '../../my_tours/view/my_tours_page.dart';

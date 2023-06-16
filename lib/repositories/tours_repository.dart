@@ -7,22 +7,13 @@ import 'package:path_provider/path_provider.dart';
 
 import 'models/models.dart';
 
-abstract class ToursRepository {
-  Future<List<Tour>> getAllTours();
-
-  Future<Tour> updateTour(Tour tour);
-
-  void deleteTour(Tour tour);
-}
-
-class ToursRepositoryImpl implements ToursRepository {
+class ToursRepository {
   final _fireStore = FirebaseFirestore.instance.collection('users');
   final Reference _storage = FirebaseStorage.instance.ref();
 
   // TODO: Use instance from AuthRepository
   final String user = FirebaseAuth.instance.currentUser!.uid;
 
-  @override
   Future<List<Tour>> getAllTours() async {
     QuerySnapshot snapshot =
         await _fireStore.doc(user).collection('tours').get();
@@ -71,7 +62,6 @@ class ToursRepositoryImpl implements ToursRepository {
     return tours;
   }
 
-  @override
   Future<Tour> updateTour(Tour tour) async {
     var tourRef = _fireStore.doc(user).collection('tours').doc(tour.id);
     var placesRef = tourRef.collection('places');
@@ -83,10 +73,9 @@ class ToursRepositoryImpl implements ToursRepository {
       'distance': tour.distance,
       'time': tour.time,
     };
+
     // Change data
     await tourRef.set(data);
-
-    // Try a new way
 
     // Clear the list of places
     var storeList = await placesRef.get().then((value) => value.docs);
@@ -105,8 +94,8 @@ class ToursRepositoryImpl implements ToursRepository {
         'title': p.title,
         'description': p.description,
         'location': GeoPoint(
-          p.location.latitude,
-          p.location.longitude,
+          p.location!.latitude,
+          p.location!.longitude,
         ),
       };
 
@@ -123,10 +112,10 @@ class ToursRepositoryImpl implements ToursRepository {
         } on FirebaseException catch (e) {
           print(e);
         }
-
-        tour.places[i] = p.copyWith(id: placeRef.id);
-        await placeRef.set(placeData);
       }
+
+      tour.places[i] = p.copyWith(key: placeRef.id as int);
+      await placeRef.set(placeData);
     }
     //
     // // Clear the list of tours to avoid duplicates
@@ -157,8 +146,7 @@ class ToursRepositoryImpl implements ToursRepository {
     return tour;
   }
 
-  @override
-  void deleteTour(Tour tour) async {
+  Future<void> deleteTour(Tour tour) async {
     final tourRef = _fireStore.doc(user).collection('tours').doc(tour.id);
 
     try {
@@ -175,5 +163,10 @@ class ToursRepositoryImpl implements ToursRepository {
     } on FirebaseException catch (e) {
       print(e);
     }
+  }
+
+  Future<List<Tour>> getUserTours() {
+    // TODO: implement getUserTours
+    throw UnimplementedError();
   }
 }

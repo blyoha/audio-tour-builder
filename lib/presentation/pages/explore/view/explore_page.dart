@@ -1,4 +1,3 @@
-import 'package:audioTourBuilder/repositories/tours_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -17,7 +16,7 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  late final ToursRepositoryImpl repo;
+  late final ToursRepository repo;
   List<Tour> tours = [];
   List<Tour> visibleList = [];
 

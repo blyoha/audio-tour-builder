@@ -16,7 +16,7 @@ class MyToursPage extends StatefulWidget {
 }
 
 class _MyToursPageState extends State<MyToursPage> {
-  late final ToursRepositoryImpl repo;
+  late final ToursRepository repo;
   List<Tour> tours = [];
   List<Tour> visibleList = [];
 
