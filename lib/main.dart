@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/auth/auth_bloc.dart';
-import 'blocs/tours/tours_bloc.dart';
-import 'theme/theme.dart';
 import 'firebase_options.dart';
 import 'repositories/auth_repository.dart';
-import 'repositories/tours_repository.dart';
 import 'router.dart';
 import 'theme/theme_constants.dart';
 import 'theme/theme_manager.dart';
@@ -21,6 +18,7 @@ Future<void> main() async {
   final authRepo = AuthRepositoryImpl();
   final isLogged = await authRepo.isLogged();
   final initRoute = isLogged ? AppRouter.homePage : AppRouter.signInPage;
+  // final initRoute = AppRouter.splashScreen;
 
   runApp(RepositoryProvider.value(
     value: authRepo,
@@ -51,15 +49,13 @@ class _TourBuilderAppState extends State<TourBuilderApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => AuthBloc(authRepo: _authRepo)),
-        BlocProvider(
-            create: (context) =>
-                ToursBloc(toursRepository: ToursRepositoryImpl())),
-      ],
+    // TODO: Use AuthBloc only
+    return BlocProvider(
+      create: (context) => AuthBloc(authRepo: _authRepo),
       child: MaterialApp(
-        theme: appTheme(),
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: _themeManager.themeMode,
         onGenerateRoute: AppRouter.onGenerateRoute,
         initialRoute: widget.initialRoute,
       ),

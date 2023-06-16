@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../api_key.dart';
 import '../../../../blocs/routing/routing_bloc.dart';
 import '../../../../repositories/models/tour.dart';
 import '../../../../theme/theme_constants.dart';

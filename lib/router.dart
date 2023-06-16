@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'presentation/pages/account/account_page.dart';
 import 'presentation/pages/auth/view/sign_in_page.dart';
 import 'presentation/pages/builder/view/builder_page.dart';
 import 'presentation/pages/home/view/home_page.dart';

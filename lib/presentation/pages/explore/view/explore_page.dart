@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../repositories/models/tour.dart';
+import '../../../../repositories/tours_repository.dart';
 import '../../../../theme/theme_constants.dart';
 import '../widgets/tours_list.dart';
 

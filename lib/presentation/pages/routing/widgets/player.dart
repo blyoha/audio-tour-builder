@@ -43,10 +43,10 @@ class _PlayerState extends State<Player> {
       listener: (context, state) async {
         if (state is RoutingInPlace) {
           final source = AudioSource.uri(
-            Uri.parse("asset://${state.place.audio}"), // TODO: Use audio URI
+            Uri.parse("asset://${state.place.audioUri}"),
             tag: MediaItem(
               id: "0",
-              title: state.place.title,
+              title: state.place.title!,
             ),
           );
 

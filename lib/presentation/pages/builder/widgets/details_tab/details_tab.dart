@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import 'input_frame.dart';
+import '../input_frame.dart';
 
 class DetailsTab extends StatelessWidget {
   final TextEditingController titleController;
