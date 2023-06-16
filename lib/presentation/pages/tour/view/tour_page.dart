@@ -6,6 +6,7 @@ import '../../../../repositories/location_repository.dart';
 import '../../../../repositories/models/tour.dart';
 import '../../routing/view/routing_page.dart';
 import '../widgets/sliver_content.dart';
+
 class TourPage extends StatelessWidget {
   static const String route = 'tour';
 
@@ -18,14 +19,15 @@ class TourPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton.extended(
-        label: const Text("START TOUR"),
+        heroTag: "start",
+        label: const Text("Start Tour"),
         onPressed: () {
           print("start tour");
           final route = MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => RoutingBloc(
                 places: tour.places,
-                locationRepository: LocationRepository(),
+                locationRepo: LocationRepository(),
               ),
               child: RoutingPage(tour: tour),
             ),
@@ -53,17 +55,28 @@ class TourPage extends StatelessWidget {
             ),
             stretch: true,
             expandedHeight: 200.0,
-            flexibleSpace: const FlexibleSpaceBar(
-              stretchModes: [StretchMode.zoomBackground],
-              background: Image(
-                image: AssetImage("assets/test_image.jpeg"),
-                height: 200.0,
-                fit: BoxFit.cover,
-              ),
-            ),
+            flexibleSpace: _showImage(context, tour.imageUrl),
           ),
           SliverContent(tour: tour),
         ],
+      ),
+    );
+  }
+
+  Widget _showImage(BuildContext context, String? image) {
+    if (image == null) {
+      return Center(
+          child: Image.asset(
+        "assets/images/no-image.png",
+        color: secondaryTextColor,
+      ));
+    }
+    return FlexibleSpaceBar(
+      stretchModes: const [StretchMode.zoomBackground],
+      background: Image(
+        image: AssetImage(image),
+        height: 200.0,
+        fit: BoxFit.cover,
       ),
     );
   }

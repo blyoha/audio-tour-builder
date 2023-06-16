@@ -20,9 +20,10 @@ class TourCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(15.0),
       ),
+      height: 120.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,10 +37,7 @@ class TourCard extends StatelessWidget {
               ),
               InkWell(
                 child: const Icon(Icons.favorite_border_outlined, size: 32.0),
-                onTap: () {
-                  print("add to favourite");
-
-                },
+                onTap: () {},
               ),
             ],
           ),

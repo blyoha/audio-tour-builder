@@ -36,7 +36,7 @@ class _RouteMapState extends State<RouteMap> {
 
     places = [];
     for (var place in widget.tour.places) {
-      places.add(place.location);
+      places.add(place.location!);
     }
 
     mapOptions = MapOptions(
@@ -62,21 +62,21 @@ class _RouteMapState extends State<RouteMap> {
                   _buildPath(widget.tour.places),
                   _buildMarkers(widget.tour.places),
                   _buildUser(snapshot.data),
-                  Positioned(
-                    right: 10.0,
-                    top: MediaQuery.paddingOf(context).top,
-                    child: FloatingActionButton.small(
-                      child: const Icon(Icons.my_location_outlined),
-                      onPressed: () async {
-                        final pos =
-                            await context.read<RoutingBloc>().currentPosition();
-                        if (pos != null) {
-                          mapController.move(pos, 18.0);
-                        }
-                      },
-                    ),
-                  ),
                 ],
+              ),
+              Positioned(
+                right: 10.0,
+                top: MediaQuery.paddingOf(context).top,
+                child: FloatingActionButton.small(
+                  child: const Icon(Icons.my_location_outlined),
+                  onPressed: () async {
+                    final pos =
+                        await context.read<RoutingBloc>().currentPosition();
+                    if (pos != null) {
+                      mapController.move(pos, 18.0);
+                    }
+                  },
+                ),
               ),
             ],
           );
@@ -86,9 +86,8 @@ class _RouteMapState extends State<RouteMap> {
   Widget _buildPath(List places) {
     final Polyline polyline = Polyline(
       points: [],
-      color: Colors.blue,
-      strokeWidth: 4.0,
-      useStrokeWidthInMeter: true,
+      color: primaryTextColor,
+      strokeWidth: 6.0,
     );
     for (var p in places) {
       polyline.points.add(p.location);
@@ -119,12 +118,29 @@ class _RouteMapState extends State<RouteMap> {
       markers: [
         Marker(
           point: pos,
-          height: 30.0,
-          width: 30.0,
-          builder: (context) => const Icon(
-            Icons.circle_rounded,
-            size: 30.0,
-            color: Colors.amber,
+          height: 36.0,
+          width: 36.0,
+          builder: (context) => const Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                Icons.circle_rounded,
+                size: 36.0,
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    color: Colors.black54,
+                    blurRadius: 4,
+                    offset: Offset(0, 1),
+                  )
+                ],
+              ),
+              Icon(
+                Icons.circle_rounded,
+                size: 28.0,
+                color: Colors.blue,
+              ),
+            ],
           ),
         ),
       ],
@@ -135,34 +151,6 @@ class _RouteMapState extends State<RouteMap> {
     return TileLayer(
       urlTemplate: "$urlTemplate?api_key={api_key}",
       additionalOptions: const {"api_key": mapsApiKey},
-    );
-  }
-}
-
-class PlaceMarker extends StatelessWidget {
-  final Place place;
-
-  const PlaceMarker({Key? key, required this.place}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final RoutingBloc bloc = context.read();
-
-    return BlocBuilder<RoutingBloc, RoutingState>(
-      bloc: bloc,
-      builder: (context, state) {
-        final int currentPlaceId = bloc.currentPlace();
-        final color = currentPlaceId == place.id ? Colors.green : Colors.red;
-        final size = currentPlaceId == place.id ? 1.5 : 1.0;
-
-        return Transform.scale(
-          scale: size,
-          child: Icon(
-            Icons.circle_outlined,
-            color: color,
-          ),
-        );
-      },
     );
   }
 }

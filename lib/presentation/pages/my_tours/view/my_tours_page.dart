@@ -33,7 +33,9 @@ class _MyToursPageState extends State<MyToursPage> {
       backgroundColor: backgroundColor,
       appBar: AppBar(title: const Text("My Tours")),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(context).pushNamed("builder"),
+        heroTag: "create",
+        onPressed: () =>
+            Navigator.of(context).pushNamed("builder", arguments: Tour.empty()),
         label: const Text("Create"),
       ),
       body: Padding(

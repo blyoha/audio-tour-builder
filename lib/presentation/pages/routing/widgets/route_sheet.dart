@@ -59,6 +59,7 @@ class _RouteSheetState extends State<RouteSheet> {
                             onPressed: () {
                               bloc.add(RoutingFinish());
                             },
+                            child: const Text("END TOUR"),
                           ),
                         ),
                       ],

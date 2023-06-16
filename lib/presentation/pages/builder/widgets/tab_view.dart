@@ -12,11 +12,11 @@ class TabView extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
       preferredSize: const Size.fromHeight(45),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12.0),
+        margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: primaryColor, width: 1.0),
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         child: TabBar(
           tabs: tabs,

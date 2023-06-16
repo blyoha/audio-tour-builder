@@ -32,9 +32,7 @@ class SliverContent extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           GestureDetector(
-            onTap: () {
-              print("add to favourite");
-            },
+            onTap: () {},
             child: const Icon(
               Icons.favorite_border_outlined,
               size: 32.0,

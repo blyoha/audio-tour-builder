@@ -11,17 +11,18 @@ part 'routing_event.dart';
 part 'routing_state.dart';
 
 class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
-  final LocationRepository locationRepository;
+  final LocationRepository locationRepo;
   final List<Place> places;
   late Iterator<Place> _iterator;
 
   RoutingBloc({
     required this.places,
-    required this.locationRepository,
+    required this.locationRepo,
   }) : super(RoutingLoading()) {
-    print(">>> INIT BLOC <<<");
-
     _iterator = places.iterator;
+    if (!_checkPermission()) {
+      _requestPermission();
+    }
 
     on<RoutingStart>(_onStart);
     on<RoutingFinish>(_onFinish);
@@ -30,16 +31,14 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
   }
 
   void _onStart(RoutingStart event, Emitter<RoutingState> emit) {
-    print(">>> START <<<");
-
     emit(RoutingLoading());
 
     _iterator.moveNext(); // Set first place as active;
     // _checkPermission();
     // _requestPermission();
 
-    locationRepository.currentLocation.listen((position) {
-      final target = _iterator.current.location;
+    locationRepo.currentLocation.listen((position) {
+      final target = _iterator.current.location!;
 
       final distance = Geolocator.distanceBetween(
         position.latitude,
@@ -47,8 +46,6 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
         target.latitude,
         target.longitude,
       );
-
-      print("$position | $target | $distance");
 
       if (distance <= 10.0) {
         add(RoutingSetActivePlace(place: _iterator.current));
@@ -60,16 +57,12 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
 
   void _onFinish(RoutingFinish event, Emitter<RoutingState> emit) {
     // Stop traveling and leave the tour screen
-    print(">>> FINISH <<<");
-
     emit(RoutingFinished());
   }
 
   void _onGoToNextPlace(
       RoutingGoToNextPlace event, Emitter<RoutingState> emit) {
     // Move to next place or end the tour
-    print(">>> ON THE WAY <<<");
-
     if (_iterator.moveNext()) {
       emit(RoutingOnTheWay(place: _iterator.current));
     } else {
@@ -79,8 +72,6 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
 
   void _onSetActivePlace(
       RoutingSetActivePlace event, Emitter<RoutingState> emit) {
-    print(">>> NEAR THE PLACE <<<");
-
     emit(RoutingInPlace(place: event.place));
   }
 
@@ -88,8 +79,9 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
     return _iterator.current.id as int;
   }
 
-  void _checkPermission() {
+  bool _checkPermission() {
     // Check user location permission
+    return false;
   }
 
   void _requestPermission() {
@@ -97,7 +89,7 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
   }
 
   Future<LatLng?> currentPosition() async {
-    final loc = await locationRepository.currentPosition();
+    final loc = await locationRepo.currentPosition();
     if (loc != null) {
       return LatLng(loc.latitude, loc.longitude);
     } else {

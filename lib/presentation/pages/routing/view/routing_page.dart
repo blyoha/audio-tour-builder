@@ -3,14 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../../blocs/routing/routing_bloc.dart';
-import '../../../../repositories/location_repository.dart';
 import '../../../../repositories/models/tour.dart';
 import '../widgets/route_map.dart';
 import '../widgets/route_sheet.dart';
 
 class RoutingPage extends StatefulWidget {
-  static const String route = 'routing';
-
+  static const String route = "routing";
   final Tour tour;
 
   const RoutingPage({Key? key, required this.tour}) : super(key: key);
@@ -42,6 +40,7 @@ class _RoutingPageState extends State<RoutingPage> {
       child: Scaffold(
         backgroundColor: Colors.white60,
         floatingActionButton: FloatingActionButton(
+          heroTag: null,
           child: const Text("Next"),
           onPressed: () {
             bloc.add(RoutingGoToNextPlace());
@@ -73,7 +72,6 @@ class _RoutingPageState extends State<RoutingPage> {
     );
   }
 
-  // TODO: Use permissions from BLoC
   void askPermission() async {
     // LocationPermission permission = await Geolocator.checkPermission();
     LocationPermission permission = await Geolocator.requestPermission();

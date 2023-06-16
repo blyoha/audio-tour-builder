@@ -56,13 +56,13 @@ class PlaceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final RoutingBloc bloc = context.read<RoutingBloc>();
+    final bloc = context.read<RoutingBloc>();
 
     return BlocBuilder<RoutingBloc, RoutingState>(
       bloc: bloc,
       builder: (context, state) {
         final int currentPlaceId = bloc.currentPlace();
-        final icon = _icon(currentPlaceId == place.id);
+        final icon = _icon(currentPlaceId == place.key);
 
         return ListTile(
           title: Text(place.title),
@@ -85,10 +85,8 @@ class PlaceTile extends StatelessWidget {
     );
   }
 
-  // TODO: Remake icon colors
   Widget _icon(bool active) {
-    final Color color =
-        active ? AppColors.primary : AppColors.primary.withOpacity(0.3);
+    final Color color = active ? primaryColor : primaryColor.withOpacity(0.3);
 
     return Stack(
       alignment: Alignment.center,
@@ -98,10 +96,10 @@ class PlaceTile extends StatelessWidget {
           size: 28.0,
           color: color,
         ),
-        Icon(
+        const Icon(
           Icons.circle_rounded,
           size: 14.0,
-          color: AppColors.textPrimary,
+          color: primaryTextColor,
         ),
       ],
     );
