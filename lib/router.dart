@@ -33,11 +33,9 @@ class AppRouter {
         return MaterialPageRoute(builder: (context) => TourPage(tour: args));
 
       case builderPage:
-        return PageRouteBuilder(
-          settings: settings,
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const BuilderPage(),
-        );
+        final args = settings.arguments as Tour;
+        return MaterialPageRoute(
+            builder: (context) => BuilderPage(tour: args));
 
       case routingPage:
         final args = settings.arguments as Tour;
