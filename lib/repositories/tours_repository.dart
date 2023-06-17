@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'models/models.dart';
 
@@ -14,68 +14,54 @@ class ToursRepository {
   // TODO: Use instance from AuthRepository
   final String user = FirebaseAuth.instance.currentUser!.uid;
 
+  List<Place> _convertPlaces(dynamic list) {
+    List<Place> places = [];
+    for (var p in list) {
+      final place = p.data();
+      place.update(
+          'location', (value) => LatLng(value.latitude, value.longitude));
+
+      places.add(Place.fromJson(place));
+    }
+
+    return places;
+  }
+
   Future<List<Tour>> getAllTours() async {
     QuerySnapshot snapshot =
         await _fireStore.doc(user).collection('tours').get();
 
-    if (snapshot.size == 0) {
-      return List.empty();
-    }
-
     List<Tour> tours = [];
-    for (var doc in snapshot.docs) {
-      // TODO: do not download audio files
-      var tourData = doc.data() as Map;
 
-      var tour = Tour.fromJson(tourData);
+    for (var doc in snapshot.docs) {
       var placesRef = await doc.reference.collection('places').get();
 
-      List<Place> places = [];
+      final tour = doc.data() as Map<String, dynamic>;
 
-      for (var doc in placesRef.docs) {
-        var placeData = doc.data();
-        // Get audio
-        String? audio = placeData['audio'];
-
-        if (audio != null) {
-          final File? file;
-          final audioRef = FirebaseStorage.instance.refFromURL(audio);
-          final dir = await getApplicationDocumentsDirectory();
-          // Download the audio file
-          file = File('${dir.path}/${audioRef.name}');
-          await audioRef.writeToFile(file);
-          // Apply the file URL
-          placeData.addAll({'audio': file});
-        }
-
-        places.add(Place.fromJson(placeData));
-      }
-
-      tour = tour.copyWith(
-        id: doc.id,
-        places: places,
-      );
-
-      tours.add(tour);
+      tour.addAll({'places': _convertPlaces(placesRef.docs)});
+      tours.add(Tour.fromJson(tour));
     }
 
     return tours;
   }
 
   Future<Tour> updateTour(Tour tour) async {
-    var tourRef = _fireStore.doc(user).collection('tours').doc(tour.id);
+    var tourRef = _fireStore.doc(user).collection('tours').doc(tour.key);
+
+    if (tour.key == null) {
+      tour = tour.copyWith(key: tourRef.id);
+    }
+    await tourRef.set(tour.toJson());
+
     var placesRef = tourRef.collection('places');
+    for (var p in tour.places) {
+      var placeRef = placesRef.doc(p.key.toString());
 
-    // Uploading the data to FireStore
-    Map<String, dynamic> data = {
-      'title': tour.title,
-      'description': tour.description,
-      'distance': tour.distance,
-      'time': tour.time,
-    };
-
-    // Change data
-    await tourRef.set(data);
+      final json = p.toJson();
+      json['location'] = GeoPoint(
+        json['location'].latitude,
+        json['location'].longitude,
+      );
 
       if (p.audioUri != null) {
         if (p.audioUri!.contains('cache')) {
@@ -94,40 +80,14 @@ class ToursRepository {
         }
       }
 
-      tour.places[i] = p.copyWith(key: placeRef.id as int);
-      await placeRef.set(placeData);
+      await placeRef.set(json);
     }
-    //
-    // // Clear the list of tours to avoid duplicates
-    // for (var doc in await placesRef.get().then((value) => value.docs)) {
-    //   await doc.reference.delete();
-    // }
-    //
-    // for (var i = 0; i < tour.places.length; i++) {
-    //   var placeRef = placesRef.doc('$i');
-    //
-    //   var data = {
-    //     'title': tour.places[i].title,
-    //     'description': tour.places[i].description,
-    //     'location': GeoPoint(
-    //       tour.places[i].location.latitude,
-    //       tour.places[i].location.longitude,
-    //     ),
-    //   };
-    //
-    //   if (tour.places[i].audio != null) {
-    //     data.addAll({'audio': _uploadFile(tour.places[i].audio!)});
-    //   }
-    //
-    //   tour.places[i] = tour.places[i].copyWith(id: placeRef.id);
-    //   await placeRef.set(data);
-    // }
 
     return tour;
   }
 
   Future<void> deleteTour(Tour tour) async {
-    final tourRef = _fireStore.doc(user).collection('tours').doc(tour.id);
+    final tourRef = _fireStore.doc(user).collection('tours').doc(tour.key);
 
     try {
       // Delete all the files from storage
