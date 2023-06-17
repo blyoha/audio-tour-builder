@@ -7,7 +7,6 @@ class Place {
   final String? title;
   final String? description;
   final LatLng? location;
-  final File? audio;
   final String? audioUri;
 
   Place({
@@ -15,7 +14,6 @@ class Place {
     this.title,
     this.description,
     this.location,
-    this.audio,
     this.audioUri,
   });
 
@@ -30,8 +28,18 @@ class Place {
       title: json['title'],
       description: json['description'],
       location: location,
-      audio: json['audio'],
+      audioUri: json['audioUri'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'key': key,
+      'title': title,
+      'description': description,
+      'location': location,
+      'audioUri': audioUri,
+    };
   }
 
   Place copyWith({
@@ -47,14 +55,13 @@ class Place {
       title: title ?? this.title,
       description: description ?? this.description,
       location: location ?? this.location,
-      audio: audio ?? this.audio,
       audioUri: audioUri ?? this.audioUri,
     );
   }
 
   @override
   String toString() {
-    return "$key. Place $title | $location";
+    return "$key. Place $title | $location | $audioUri";
   }
 
   @override

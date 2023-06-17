@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../../blocs/builder/builder_bloc.dart';
 import '../../../../../repositories/models/place.dart';
@@ -42,7 +41,6 @@ class _PlaceEditSheetState extends State<PlaceEditSheet> {
 
     title.text = widget.place.title ?? "";
     description.text = widget.place.description ?? "";
-    audioFile = widget.place.audio;
   }
 
   @override
@@ -98,7 +96,7 @@ class _PlaceEditSheetState extends State<PlaceEditSheet> {
                                     final place = widget.place.copyWith(
                                       title: title.text,
                                       description: description.text,
-                                      audio: audioFile,
+                                      audioUri: audioFile?.path,
                                     );
 
                                     if (places.contains(place)) {
@@ -177,8 +175,9 @@ class _PlaceEditSheetState extends State<PlaceEditSheet> {
 
                 if (data != null) {
                   audioFile = File(data.files.single.path!);
-                  // TODO: use file name if exists
-                  var name = '${const Uuid().v4()}.mp3';
+
+                  // Rename file
+                  var name = '${widget.place.key}.mp3';
                   var lastSeparator =
                       audioFile!.path.lastIndexOf(Platform.pathSeparator);
                   var newPath =

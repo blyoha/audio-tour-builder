@@ -77,40 +77,20 @@ class ToursRepository {
     // Change data
     await tourRef.set(data);
 
-    // Clear the list of places
-    var storeList = await placesRef.get().then((value) => value.docs);
-    var t = tour.places.map((e) => e.title);
-    for (QueryDocumentSnapshot i in storeList) {
-      if (!t.contains(i.get('title'))) {
-        await FirebaseStorage.instance.refFromURL(i.get('audio')).delete();
-        i.reference.delete();
-      }
-    }
+      if (p.audioUri != null) {
+        if (p.audioUri!.contains('cache')) {
+          // It's a local file. Needs to be uploaded
+          final file = File(p.audioUri!);
+          String name = file.path.split('/').last;
 
-    for (var i = 0; i < tour.places.length; i++) {
-      var p = tour.places[i];
-      var placeRef = placesRef.doc('$i');
-      var placeData = {
-        'title': p.title,
-        'description': p.description,
-        'location': GeoPoint(
-          p.location!.latitude,
-          p.location!.longitude,
-        ),
-      };
+          final audioRef =
+              _storage.child('users/$user/${tourRef.id}/audio/$name');
 
-      if (p.audio != null) {
-        String name = p.audio!.path.split('/').last;
-        Reference audioRef =
-            _storage.child('users/$user/${tourRef.id}/audio/$name');
+          String remoteUri = await audioRef
+              .putFile(file)
+              .then((snapshot) async => await snapshot.ref.getDownloadURL());
 
-        // Upload to Storage
-        try {
-          var snapshot = await audioRef.putFile(p.audio!);
-          String url = await snapshot.ref.getDownloadURL();
-          placeData.addAll({'audio': url});
-        } on FirebaseException catch (e) {
-          print(e);
+          json['audioUri'] = remoteUri;
         }
       }
 
