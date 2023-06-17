@@ -1,37 +1,43 @@
 import 'place.dart';
 
 class Tour {
-  final String? id;
+  final String? key;
   final String title;
   final String description;
   final double distance;
   final double time;
   final List<Place> places;
+  final String? imageUrl;
 
   Tour({
-    this.id,
+    this.key,
     required this.title,
     required this.description,
     required this.distance,
     required this.time,
     required this.places,
+    this.imageUrl,
   });
 
   factory Tour.fromJson(Map<dynamic, dynamic> json) {
-    List<Place> places = [];
-
-    if (json['places'] != null) {
-      json['places'].forEach((value) => places.add(Place.fromJson(value)));
-    }
-
     return Tour(
-      id: json['id'],
+      key: json['key'],
       title: json['title'],
       description: json['description'],
-      places: places,
-      time: json['time'].toDouble(),
-      distance: json['distance'].toDouble(),
+      places: json['places'],
+      time: json['time'] ?? 0.0,
+      distance: json['distance'] ?? 0.0,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'key': key,
+      'title': title,
+      'description': description,
+      'time': time,
+      'distance': distance,
+    };
   }
 
   factory Tour.empty() {
@@ -45,7 +51,7 @@ class Tour {
   }
 
   Tour copyWith({
-    String? id,
+    String? key,
     String? title,
     String? description,
     double? distance,
@@ -53,12 +59,17 @@ class Tour {
     List<Place>? places,
   }) {
     return Tour(
-      id: id ?? this.id,
+      key: key ?? this.key,
       title: title ?? this.title,
       description: description ?? this.description,
       distance: distance ?? this.distance,
       time: time ?? this.time,
       places: places ?? this.places,
     );
+  }
+
+  @override
+  String toString() {
+    return "$title. ${places.length} places";
   }
 }
