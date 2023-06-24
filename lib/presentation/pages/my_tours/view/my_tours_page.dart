@@ -43,20 +43,27 @@ class _MyToursPageState extends State<MyToursPage> {
           horizontal: 12.0,
           vertical: 8.0,
         ),
-        child: tours.isEmpty ? _showEmptySpace() : _showList(),
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: tours.isEmpty ? _showEmptySpace() : _showList(),
+        ),
       ),
     );
   }
 
   Widget _showEmptySpace() {
-    return Center(
-      child: Text(
-        "No tours here :(",
-        style: Theme.of(context)
-            .textTheme
-            .titleMedium
-            ?.copyWith(color: secondaryTextColor),
-      ),
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        Text(
+          "No tours here :(",
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: secondaryTextColor),
+        )
+      ],
     );
   }
 

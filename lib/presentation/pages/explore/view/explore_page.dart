@@ -51,32 +51,36 @@ class _ExplorePageState extends State<ExplorePage> {
               onChanged: _search,
             ),
             const Gap(12.0),
-            Expanded(child: tours.isEmpty ? _showEmptySpace() : _showList()),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refresh,
+                child: tours.isEmpty ? _showEmptyList() : _showList(),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _showEmptySpace() {
-    return Center(
-      child: Text(
-        "No tours here :(",
-        style: Theme.of(context)
-            .textTheme
-            .titleMedium
-            ?.copyWith(color: secondaryTextColor),
-      ),
+  Widget _showEmptyList() {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        Text(
+          "No tours here :(",
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: secondaryTextColor),
+        )
+      ],
     );
   }
 
   Widget _showList() {
-    return RefreshIndicator(
-      onRefresh: _refresh,
-      triggerMode: RefreshIndicatorTriggerMode.onEdge,
-      color: primaryColor,
-      child: ToursList(tours: visibleList),
-    );
+    return ToursList(tours: visibleList);
   }
 
   Future<void> _refresh() async {
