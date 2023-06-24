@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../repositories/auth_repository.dart';
+import '../../../router.dart';
 import '../../../theme/theme_constants.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -28,7 +30,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _navigateToHome() async {
+    final authRepo = AuthRepositoryImpl();
+    final isLogged = await authRepo.isLogged();
+
     await Future.delayed(const Duration(seconds: 1))
-        .then((_) => Navigator.pushReplacementNamed(context, "home"));
+        .then((_) => Navigator.pushReplacementNamed(
+              context,
+              isLogged ? AppRouter.homePage : AppRouter.welcomePage,
+            ));
   }
 }
