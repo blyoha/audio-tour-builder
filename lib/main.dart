@@ -17,8 +17,7 @@ Future<void> main() async {
 
   final authRepo = AuthRepositoryImpl();
   final isLogged = await authRepo.isLogged();
-  final initRoute = isLogged ? AppRouter.homePage : AppRouter.signInPage;
-  // final initRoute = AppRouter.splashScreen;
+  final initRoute = isLogged ? AppRouter.homePage : AppRouter.welcomePage;
 
   runApp(RepositoryProvider.value(
     value: authRepo,
@@ -57,7 +56,7 @@ class _TourBuilderAppState extends State<TourBuilderApp> {
         darkTheme: darkTheme,
         themeMode: _themeManager.themeMode,
         onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: widget.initialRoute,
+        initialRoute: AppRouter.splashScreen,
       ),
     );
   }

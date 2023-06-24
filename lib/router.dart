@@ -11,7 +11,7 @@ import 'repositories/models/tour.dart';
 
 class AppRouter {
   static const String splashScreen = SplashScreen.route;
-  static const String signInPage = SignInPage.route;
+  static const String welcomePage = WelcomePage.route;
   static const String homePage = HomePage.route;
   static const String tourPage = TourPage.route;
   static const String builderPage = BuilderPage.route;
@@ -23,8 +23,8 @@ class AppRouter {
       case splashScreen:
         return MaterialPageRoute(builder: (context) => const SplashScreen());
 
-      case signInPage:
-        return MaterialPageRoute(builder: (context) => const SignInPage());
+      case welcomePage:
+        return MaterialPageRoute(builder: (context) => const WelcomePage());
 
       case homePage:
         return MaterialPageRoute(builder: (context) => const HomePage());
