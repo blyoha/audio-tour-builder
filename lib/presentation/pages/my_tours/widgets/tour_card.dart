@@ -20,7 +20,7 @@ class TourCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(15.0),
       ),
-      height: 120.0,
+      height: 130.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -50,6 +50,7 @@ class TourCard extends StatelessWidget {
             ),
             overflow: TextOverflow.ellipsis,
             maxLines: 3,
+
           ),
         ],
       ),
