@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../theme/theme_constants.dart';
 
 class SplashScreen extends StatefulWidget {
-  static const String route = 'splash'; 
+  static const String route = 'splash';
+
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
@@ -22,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
       color: primaryColor,
       alignment: Alignment.center,
-      child: Image.asset("assets/images/logo.png"),
+      child: Image.asset("assets/images/logo.png", height: 160.0),
     );
   }
 
