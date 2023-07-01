@@ -95,6 +95,28 @@ class ToursRepository {
         }
       }
 
+      // Save images
+      final List<String> images = [];
+      if (p.images != null) {
+        for (String i in p.images!) {
+          if (!i.contains('googleapis.com')) {
+            // It's a local file. Needs to be uploaded
+            final file = File(i);
+            String name = file.path.split('/').last;
+
+            final imageRef = _storage
+                .child('users/$user/${tourRef.id}/${p.key}/images/$name');
+
+            String remoteUri = await imageRef
+                .putFile(file)
+                .then((snapshot) async => await snapshot.ref.getDownloadURL());
+
+            images.add(remoteUri);
+          }
+        }
+      }
+      json['images'] = images;
+
       await placeRef.set(json);
     }
 
