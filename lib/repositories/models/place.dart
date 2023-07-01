@@ -8,6 +8,7 @@ class Place {
   final String? description;
   final LatLng? location;
   final String? audioUri;
+  final List<String>? images;
 
   Place({
     this.key,
@@ -15,6 +16,7 @@ class Place {
     this.description,
     this.location,
     this.audioUri,
+    this.images,
   });
 
   factory Place.fromJson(Map<dynamic, dynamic> json) {
@@ -23,12 +25,20 @@ class Place {
       json['location'].longitude,
     );
 
+    final List<String> images = [];
+    if (json['images'] != null) {
+      for (var i in json['images']) {
+        images.add(i);
+      }
+    }
+
     return Place(
       key: json['key'],
       title: json['title'],
       description: json['description'],
       location: location,
       audioUri: json['audioUri'],
+      images: images,
     );
   }
 
@@ -39,6 +49,7 @@ class Place {
       'description': description,
       'location': location,
       'audioUri': audioUri,
+      'images': images,
     };
   }
 
@@ -49,6 +60,7 @@ class Place {
     LatLng? location,
     File? audio,
     String? audioUri,
+    List<String>? images,
   }) {
     return Place(
       key: key ?? this.key,
@@ -56,6 +68,7 @@ class Place {
       description: description ?? this.description,
       location: location ?? this.location,
       audioUri: audioUri ?? this.audioUri,
+      images: images ?? this.images,
     );
   }
 
