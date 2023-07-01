@@ -51,6 +51,21 @@ class ToursRepository {
     if (tour.key == null) {
       tour = tour.copyWith(key: tourRef.id);
     }
+
+    // Save cover image
+    if (tour.imageUrl != null) {
+      final file = File(tour.imageUrl!);
+      String name = file.path.split('/').last;
+
+      final coverRef = _storage.child('users/$user/${tourRef.id}/cover/$name');
+
+      String remoteUri = await coverRef
+          .putFile(file)
+          .then((snapshot) async => await snapshot.ref.getDownloadURL());
+
+      tour = tour.copyWith(imageUrl: remoteUri);
+    }
+
     await tourRef.set(tour.toJson());
 
     var placesRef = tourRef.collection('places');
