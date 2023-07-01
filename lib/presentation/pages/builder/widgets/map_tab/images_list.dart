@@ -145,7 +145,7 @@ class _ImagesListState extends State<ImagesList> {
   void _pickFile({int? index}) async {
     FilePickerResult? data = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      allowMultiple: true,
+      allowMultiple: index == null,
     );
 
     if (data != null) {
