@@ -57,9 +57,6 @@ class _RoutingPageState extends State<RoutingPage> {
             }
           },
           builder: (context, state) {
-            if (state is RoutingLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
             return Stack(
               children: [
                 RouteMap(tour: widget.tour),
