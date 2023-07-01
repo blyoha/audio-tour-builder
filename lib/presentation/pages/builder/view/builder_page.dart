@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +25,8 @@ class BuilderPage extends StatefulWidget {
 class _BuilderPageState extends State<BuilderPage> {
   final titleController = TextEditingController();
   final descController = TextEditingController();
+  final coverController = TextEditingController();
+
   late final BuilderBloc bloc;
 
   @override
@@ -38,6 +42,10 @@ class _BuilderPageState extends State<BuilderPage> {
 
     titleController.text = tour.title;
     descController.text = tour.description;
+
+    if (tour.imageUrl != null) {
+      coverController.text = tour.imageUrl!;
+    }
   }
 
   @override
@@ -52,7 +60,6 @@ class _BuilderPageState extends State<BuilderPage> {
           floatingActionButton: BlocBuilder<BuilderBloc, BuilderState>(
             bloc: bloc,
             builder: (context, state) {
-
               final label = (state is BuilderEditing)
                   ? const Text('Save')
                   : const Center(
@@ -63,7 +70,7 @@ class _BuilderPageState extends State<BuilderPage> {
 
               return FloatingActionButton.extended(
                 heroTag: 'save',
-                onPressed: () {
+                onPressed: () async {
                   final title = titleController.text;
                   final desc = descController.text;
 
@@ -73,9 +80,22 @@ class _BuilderPageState extends State<BuilderPage> {
                         const SnackBar(content: Text('Empty text fields!')),
                       );
                     } else {
+                      // Rename cover file
+                      var file = File(coverController.text);
+                      if (coverController.text.isNotEmpty) {
+                        var lastSeparator =
+                            file.path.lastIndexOf(Platform.pathSeparator);
+                        var lastDot = file.path.lastIndexOf('.');
+                        var path = file.path.substring(0, lastSeparator + 1);
+                        var type = file.path.substring(lastDot);
+                        var newPath = '${path}cover$type';
+
+                        file = await file.rename(newPath);
+                      }
                       final tour = state.tour.copyWith(
                         title: title,
                         description: desc,
+                        imageUrl: file.path,
                       );
 
                       bloc.add(BuilderSave(tour: tour));
@@ -98,6 +118,7 @@ class _BuilderPageState extends State<BuilderPage> {
         DetailsTab(
           titleController: titleController,
           descController: descController,
+          coverController: coverController,
         ),
         const MapTab(),
       ],
