@@ -69,7 +69,7 @@ class ToursRepository {
     await tourRef.set(tour.toJson());
 
     var placesRef = tourRef.collection('places');
-    for (var p in tour.places) {
+    for (Place p in tour.places) {
       var placeRef = placesRef.doc(p.key.toString());
 
       final json = p.toJson();
@@ -78,14 +78,15 @@ class ToursRepository {
         json['location'].longitude,
       );
 
+      // Save audio
       if (p.audioUri != null) {
-        if (p.audioUri!.contains('cache')) {
+        if (!p.audioUri!.contains('googleapis.com')) {
           // It's a local file. Needs to be uploaded
           final file = File(p.audioUri!);
           String name = file.path.split('/').last;
 
           final audioRef =
-              _storage.child('users/$user/${tourRef.id}/audio/$name');
+              _storage.child('users/$user/${tourRef.id}/${p.key}/audio/$name');
 
           String remoteUri = await audioRef
               .putFile(file)
