@@ -47,39 +47,52 @@ class _RouteMapState extends State<RouteMap> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Position>(
-        stream:
-            Geolocator.getPositionStream(locationSettings: locationSettings),
-        builder: (context, snapshot) {
-          return Stack(
-            children: [
-              FlutterMap(
-                options: mapOptions,
-                mapController: mapController,
-                children: [
-                  _buildTile(),
-                  _buildPath(widget.tour.places),
-                  _buildMarkers(widget.tour.places),
-                  _buildUser(snapshot.data),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15.0),
+            child: CircleAvatar(
+              radius: 24.0,
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.black,
+              child: IconButton(
+                icon: const Icon(Icons.my_location_outlined),
+                onPressed: () async {
+                  final pos =
+                      await context.read<RoutingBloc>().currentPosition();
+                  if (pos != null) {
+                    mapController.move(pos, 18.0);
+                  }
+                },
               ),
-              Positioned(
-                right: 10.0,
-                top: MediaQuery.paddingOf(context).top,
-                child: FloatingActionButton.small(
-                  child: const Icon(Icons.my_location_outlined),
-                  onPressed: () async {
-                    final pos =
-                        await context.read<RoutingBloc>().currentPosition();
-                    if (pos != null) {
-                      mapController.move(pos, 18.0);
-                    }
-                  },
+            ),
+          ),
+        ],
+        backgroundColor: Colors.transparent,
+      ),
+      extendBodyBehindAppBar: true,
+      body: StreamBuilder<Position>(
+          stream:
+              Geolocator.getPositionStream(locationSettings: locationSettings),
+          builder: (context, snapshot) {
+            return Stack(
+              children: [
+                FlutterMap(
+                  options: mapOptions,
+                  mapController: mapController,
+                  children: [
+                    _buildTile(),
+                    _buildPath(widget.tour.places),
+                    _buildMarkers(widget.tour.places),
+                    _buildUser(snapshot.data),
+                  ],
                 ),
-              ),
-            ],
-          );
-        });
+              ],
+            );
+          }),
+    );
   }
 
   Widget _buildPath(List places) {
