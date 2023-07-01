@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../repositories/auth_repository.dart';
-import '../../../router.dart';
 import '../../../theme/theme_constants.dart';
+import '../auth/view/welcome_page.dart';
+import '../home/view/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String route = 'splash';
@@ -33,10 +34,15 @@ class _SplashScreenState extends State<SplashScreen> {
     final authRepo = AuthRepositoryImpl();
     final isLogged = await authRepo.isLogged();
 
+    final route = PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          isLogged ? const HomePage() : const WelcomePage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition(opacity: animation, child: child),
+      transitionDuration: const Duration(seconds: 1),
+    );
+
     await Future.delayed(const Duration(seconds: 1))
-        .then((_) => Navigator.pushReplacementNamed(
-              context,
-              isLogged ? AppRouter.homePage : AppRouter.welcomePage,
-            ));
+        .then((_) => Navigator.pushReplacement(context, route));
   }
 }
