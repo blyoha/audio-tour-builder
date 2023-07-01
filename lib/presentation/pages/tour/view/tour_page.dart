@@ -73,8 +73,8 @@ class TourPage extends StatelessWidget {
     }
     return FlexibleSpaceBar(
       stretchModes: const [StretchMode.zoomBackground],
-      background: Image(
-        image: AssetImage(image),
+      background: Image.network(
+        image,
         height: 200.0,
         fit: BoxFit.cover,
       ),
