@@ -11,6 +11,7 @@ import '../../../../../repositories/models/place.dart';
 import '../../../../../theme/theme_constants.dart';
 import '../../../routing/widgets/resize_indicator.dart';
 import '../input_frame.dart';
+import 'images_list.dart';
 
 class PlaceEditSheet extends StatefulWidget {
   final Place place;
@@ -33,6 +34,7 @@ class PlaceEditSheet extends StatefulWidget {
 class _PlaceEditSheetState extends State<PlaceEditSheet> {
   final title = TextEditingController();
   final description = TextEditingController();
+  final List<File> images = [];
   File? audioFile;
 
   @override
@@ -41,6 +43,11 @@ class _PlaceEditSheetState extends State<PlaceEditSheet> {
 
     title.text = widget.place.title ?? "";
     description.text = widget.place.description ?? "";
+    if (widget.place.images != null) {
+      for (String i in widget.place.images!) {
+        images.add(File(i));
+      }
+    }
   }
 
   @override
@@ -51,99 +58,104 @@ class _PlaceEditSheetState extends State<PlaceEditSheet> {
       bloc: bloc,
       builder: (context, state) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.9,
+          snap: true,
           expand: false,
+          snapSizes: const [0.9],
+          initialChildSize: 0.9,
+          minChildSize: 0.9,
           builder: (context, scrollController) => Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 12.0,
               vertical: 8.0,
             ),
-            child: Stack(
+            child: Column(
               children: [
-                Column(
+                const ResizeIndicator(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const ResizeIndicator(),
-                    Expanded(
-                      child: ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              InputFrame(label: "Title", controller: title),
-                              const Gap(12.0),
-                              InputFrame(
-                                label: "Description",
-                                controller: description,
-                                expanded: true,
-                              ),
-                              const Gap(12.0),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(
-                                  "Audio file",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ),
-                              _buildFilePicker(),
-                              const Gap(12.0),
-                              TextButton(
-                                onPressed: () {
-                                  if (state is BuilderEditing) {
-                                    final places = List.of(state.tour.places);
-
-                                    final place = widget.place.copyWith(
-                                      title: title.text,
-                                      description: description.text,
-                                      audioUri: audioFile?.path,
-                                    );
-
-                                    if (places.contains(place)) {
-                                      places.replaceRange(
-                                          place.key!, place.key! + 1, [place]);
-                                    } else {
-                                      places.add(place);
-                                    }
-
-                                    final tour = state.tour.copyWith(
-                                      places: places,
-                                    );
-
-                                    bloc.add(BuilderLoad(tour: tour));
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                                child: const Text("Save"),
-                              ),
-                            ],
-                          ),
-                        ],
+                    OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: errorColor),
                       ),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        if (state is BuilderEditing) {
+                          final places = List.of(state.tour.places);
+                          places.removeAt(widget.place.key!);
+
+                          final tour = state.tour.copyWith(places: places);
+
+                          bloc.add(BuilderLoad(tour: tour));
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text('Save'),
                     ),
                   ],
                 ),
-                Positioned(
-                  right: 0.0,
-                  child: IconButton(
-                    onPressed: () {
-                      if (state is BuilderEditing) {
-                        final places = List.of(state.tour.places);
-                        places.removeAt(widget.place.key!);
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    physics: const ClampingScrollPhysics(),
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          InputFrame(label: "Title", controller: title),
+                          const Gap(12.0),
+                          InputFrame(
+                            label: "Description",
+                            controller: description,
+                            expanded: true,
+                          ),
+                          const Gap(12.0),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: Text(
+                              "Audio file",
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ),
+                          _buildFilePicker(),
+                          const Gap(12.0),
+                          ImagesList(images: images),
+                          const Gap(12.0),
+                          TextButton(
+                            onPressed: () {
+                              if (state is BuilderEditing) {
+                                final places = List.of(state.tour.places);
 
-                        final tour = state.tour.copyWith(
-                          places: places,
-                        );
+                                final place = widget.place.copyWith(
+                                  title: title.text,
+                                  description: description.text,
+                                  audioUri: audioFile?.path,
+                                  images: images.map((e) => e.path).toList(),
+                                );
 
-                        bloc.add(BuilderLoad(tour: tour));
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    iconSize: 28.0,
-                    icon: const Icon(
-                      Icons.delete_outline_rounded,
-                      color: errorColor,
-                    ),
+                                if (places.contains(place)) {
+                                  places.replaceRange(
+                                      place.key!, place.key! + 1, [place]);
+                                } else {
+                                  places.add(place);
+                                }
+
+                                final tour = state.tour.copyWith(
+                                  places: places,
+                                );
+
+                                bloc.add(BuilderLoad(tour: tour));
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            child: const Text("Save"),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
