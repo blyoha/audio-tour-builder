@@ -14,6 +14,7 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
   final LocationRepository locationRepo;
   final List<Place> places;
   late Iterator<Place> _iterator;
+  bool _active = false;
 
   RoutingBloc({
     required this.places,
@@ -48,7 +49,12 @@ class RoutingBloc extends Bloc<RoutingEvent, RoutingState> {
       );
 
       if (distance <= 10.0) {
+        if (!_active) {
+          _active = true;
+        }
         add(RoutingSetActivePlace(place: _iterator.current));
+      } else {
+        _active = false;
       }
     });
 
