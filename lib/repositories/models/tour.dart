@@ -24,6 +24,7 @@ class Tour {
       key: json['key'],
       title: json['title'],
       description: json['description'],
+      imageUrl: json['imageUrl'],
       places: json['places'],
       time: json['time'] ?? 0.0,
       distance: json['distance'] ?? 0.0,
@@ -35,6 +36,7 @@ class Tour {
       'key': key,
       'title': title,
       'description': description,
+      'imageUrl': imageUrl,
       'time': time,
       'distance': distance,
     };
@@ -44,6 +46,7 @@ class Tour {
     return Tour(
       title: "",
       description: "",
+      imageUrl: null,
       distance: 0.0,
       time: 0.0,
       places: [],
@@ -54,14 +57,17 @@ class Tour {
     String? key,
     String? title,
     String? description,
+    String? imageUrl,
     double? distance,
     double? time,
     List<Place>? places,
+
   }) {
     return Tour(
       key: key ?? this.key,
       title: title ?? this.title,
       description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
       distance: distance ?? this.distance,
       time: time ?? this.time,
       places: places ?? this.places,
