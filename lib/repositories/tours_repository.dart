@@ -8,11 +8,11 @@ import 'package:latlong2/latlong.dart';
 import 'models/models.dart';
 
 class ToursRepository {
-  final _fireStore = FirebaseFirestore.instance.collection('users');
+  final _fireStore = FirebaseFirestore.instance;
   final Reference _storage = FirebaseStorage.instance.ref();
 
   // TODO: Use instance from AuthRepository
-  final String user = FirebaseAuth.instance.currentUser!.uid;
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<Place> _convertPlaces(dynamic list) {
     List<Place> places = [];
@@ -28,12 +28,28 @@ class ToursRepository {
   }
 
   Future<List<Tour>> getAllTours() async {
-    QuerySnapshot snapshot =
-        await _fireStore.doc(user).collection('tours').get();
+    QuerySnapshot snapshot = await _fireStore
+        .collection('users')
+        .where('id', isNotEqualTo: userId)
+        .get();
 
     List<Tour> tours = [];
 
-    for (var doc in snapshot.docs) {
+    for (var user in snapshot.docs) {
+      var userTours = await user.reference
+          .collection('tours')
+          .get()
+          .then((list) => _getTours(list.docs));
+
+      tours.addAll(userTours);
+    }
+    return tours;
+  }
+
+  Future<List<Tour>> _getTours(docs) async {
+    List<Tour> tours = [];
+
+    for (var doc in docs) {
       var placesRef = await doc.reference.collection('places').get();
 
       final tour = doc.data() as Map<String, dynamic>;
@@ -41,12 +57,23 @@ class ToursRepository {
       tour.addAll({'places': _convertPlaces(placesRef.docs)});
       tours.add(Tour.fromJson(tour));
     }
+    return tours;
+  }
+
+  Future<List<Tour>> getUserTours() async {
+    QuerySnapshot snapshot = await _fireStore
+        .collection('users')
+        .doc(userId)
+        .collection('tours')
+        .get();
+
+    List<Tour> tours = await _getTours(snapshot.docs);
 
     return tours;
   }
 
   Future<Tour> updateTour(Tour tour) async {
-    var tourRef = _fireStore.doc(user).collection('tours').doc(tour.key);
+    var tourRef = _fireStore.doc(userId).collection('tours').doc(tour.key);
 
     if (tour.key == null) {
       tour = tour.copyWith(key: tourRef.id);
@@ -57,7 +84,8 @@ class ToursRepository {
       final file = File(tour.imageUrl!);
       String name = file.path.split('/').last;
 
-      final coverRef = _storage.child('users/$user/${tourRef.id}/cover/$name');
+      final coverRef =
+          _storage.child('users/$userId/${tourRef.id}/cover/$name');
 
       String remoteUri = await coverRef
           .putFile(file)
@@ -85,8 +113,8 @@ class ToursRepository {
           final file = File(p.audioUri!);
           String name = file.path.split('/').last;
 
-          final audioRef =
-              _storage.child('users/$user/${tourRef.id}/${p.key}/audio/$name');
+          final audioRef = _storage
+              .child('users/$userId/${tourRef.id}/${p.key}/audio/$name');
 
           String remoteUri = await audioRef
               .putFile(file)
@@ -106,7 +134,7 @@ class ToursRepository {
             String name = file.path.split('/').last;
 
             final imageRef = _storage
-                .child('users/$user/${tourRef.id}/${p.key}/images/$name');
+                .child('users/$userId/${tourRef.id}/${p.key}/images/$name');
 
             String remoteUri = await imageRef
                 .putFile(file)
@@ -125,12 +153,12 @@ class ToursRepository {
   }
 
   Future<void> deleteTour(Tour tour) async {
-    final tourRef = _fireStore.doc(user).collection('tours').doc(tour.key);
+    final tourRef = _fireStore.doc(userId).collection('tours').doc(tour.key);
 
     try {
       // Delete all the files from storage
       List places = await _storage
-          .child('users/$user/${tourRef.id}/audio/')
+          .child('users/$userId/${tourRef.id}/audio/')
           .listAll()
           .then((value) => value.items);
       for (Reference item in places) {
@@ -141,10 +169,5 @@ class ToursRepository {
     } on FirebaseException catch (e) {
       print(e);
     }
-  }
-
-  Future<List<Tour>> getUserTours() {
-    // TODO: implement getUserTours
-    throw UnimplementedError();
   }
 }
