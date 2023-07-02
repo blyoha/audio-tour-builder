@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthRepository {
@@ -20,6 +21,7 @@ abstract class AuthRepository {
 
 class AuthRepositoryImpl implements AuthRepository {
   final _auth = FirebaseAuth.instance;
+  final _fireStore = FirebaseFirestore.instance;
 
   AuthRepositoryImpl() {
     // TODO: Add persistence
@@ -32,10 +34,19 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final user = await _auth
+          .createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          )
+          .then((credential) => credential.user!);
+
+      // Save user's data to FireStore
+      final userRef = _fireStore.collection('users').doc(user.uid);
+      await userRef.set({
+        'id': user.uid,
+        'email': user.email,
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw Exception('The password is too weak.');
