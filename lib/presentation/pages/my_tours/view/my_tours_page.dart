@@ -77,7 +77,7 @@ class _MyToursPageState extends State<MyToursPage> {
   }
 
   Future<void> _refresh() async {
-    final fetched = await repo.getAllTours();
+    final fetched = await repo.getUserTours();
     tours = fetched;
     visibleList = tours;
     setState(() {});
