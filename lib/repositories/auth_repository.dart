@@ -70,11 +70,13 @@ class AuthRepositoryImpl implements AuthRepository {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        throw Exception("Couldn't find a user with this email.");
+        throw Exception('Couldn\'t find a user with this email.');
       } else if (e.code == 'wrong-password') {
-        throw Exception("Wrong password provided.");
+        throw Exception('Wrong password provided.');
       } else if (e.code == 'unknown') {
-        throw Exception("Please, enter email and password.");
+        throw Exception('Please, enter email and password.');
+      } else if (e.code == 'invalid-email') {
+        throw Exception('Invalid email.');
       }
     }
   }
