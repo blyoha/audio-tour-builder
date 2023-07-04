@@ -16,6 +16,7 @@ class InputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
       minLines: lines,
       maxLines: lines,
       cursorColor: primaryColor,
