@@ -29,7 +29,7 @@ class InputFrame extends StatelessWidget {
         ),
         const Gap(8.0),
         expanded
-            ? InputField(controller: controller, lines: 15)
+            ? InputField(controller: controller, lines: 10)
             : InputField(controller: controller),
       ],
     );

@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../blocs/auth/auth_bloc.dart';
 import '../../../../router.dart';
-import '../../../../theme/theme.dart';
+import '../../../../theme/theme_constants.dart';
 import '../widgets/input_field.dart';
 import 'recover_page.dart';
 
@@ -37,11 +37,15 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text('Sign In'),
         leading: const BackButton(),
       ),
-      body: BlocConsumer(
+      body: BlocConsumer<AuthBloc, AuthState>(
         bloc: authBloc,
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.pushNamedAndRemoveUntil(context, AppRouter.homePage, (route) => false,);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRouter.homePage,
+              (route) => false,
+            );
           }
           if (state is AuthError) {
             ScaffoldMessenger.of(context)
@@ -50,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
         },
         builder: (context, state) {
           if (state is AuthLoading) {
-            return Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+            return const Center(
+              child: CircularProgressIndicator(color: primaryColor),
             );
           }
           return Padding(
@@ -61,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _buildInputs(),
                 const Gap(48.0),
@@ -73,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _buildInputs() {
+  Widget _buildInputs() {
     return Column(children: [
       InputField(
         controller: email,
@@ -101,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
             decoration: TextDecoration.underline,
           ),
         ),
-      )
+      ),
     ]);
   }
 

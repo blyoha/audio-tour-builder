@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../repositories/auth_repository.dart';
 import '../../../../repositories/models/tour.dart';
 import '../../../../repositories/tours_repository.dart';
 import '../../../../theme/theme_constants.dart';
