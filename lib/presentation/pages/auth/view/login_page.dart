@@ -41,9 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         bloc: authBloc,
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.pushReplacementNamed(context, AppRouter.homePage);
-            // ScaffoldMessenger.of(context)
-            //     .showSnackBar(SnackBar(content: Text('Success')));
+            Navigator.pushNamedAndRemoveUntil(context, AppRouter.homePage, (route) => false,);
           }
           if (state is AuthError) {
             ScaffoldMessenger.of(context)
