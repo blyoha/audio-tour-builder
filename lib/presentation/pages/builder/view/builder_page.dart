@@ -81,21 +81,20 @@ class _BuilderPageState extends State<BuilderPage> {
                       );
                     } else {
                       // Rename cover file
-                      var file = File(coverController.text);
+                      String? imageUrl;
                       if (coverController.text.isNotEmpty) {
+                        final text = coverController.text;
                         var lastSeparator =
-                            file.path.lastIndexOf(Platform.pathSeparator);
-                        var lastDot = file.path.lastIndexOf('.');
-                        var path = file.path.substring(0, lastSeparator + 1);
-                        var type = file.path.substring(lastDot);
-                        var newPath = '${path}cover$type';
-
-                        file = await file.rename(newPath);
+                            text.lastIndexOf(Platform.pathSeparator);
+                        var lastDot = text.lastIndexOf('.');
+                        var path = text.substring(0, lastSeparator + 1);
+                        var type = text.substring(lastDot);
+                        imageUrl = '${path}cover$type';
                       }
                       final tour = state.tour.copyWith(
                         title: title,
                         description: desc,
-                        imageUrl: file.path,
+                        imageUrl: imageUrl,
                       );
 
                       bloc.add(BuilderSave(tour: tour));
