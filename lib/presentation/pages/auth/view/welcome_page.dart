@@ -3,6 +3,9 @@ import 'package:audioTourBuilder/presentation/pages/auth/view/sign_up_page.dart'
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import 'login_page.dart';
+import 'sign_up_page.dart';
+
 class WelcomePage extends StatelessWidget {
   static const String route = 'welcome';
 
