@@ -11,7 +11,6 @@ class ToursRepository {
   final _fireStore = FirebaseFirestore.instance;
   final Reference _storage = FirebaseStorage.instance.ref();
 
-  // TODO: Use instance from AuthRepository
   final String userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<Place> _convertPlaces(dynamic list) {
@@ -25,6 +24,32 @@ class ToursRepository {
     }
 
     return places;
+  }
+
+  Future<bool> owned(Tour tour) async {
+    final List result = await _fireStore
+        .collection('users')
+        .doc(userId)
+        .collection('tours')
+        .where('key', isEqualTo: tour.key)
+        .get()
+        .then((value) => value.docs);
+
+    return result.isNotEmpty;
+  }
+
+  Future<List<Tour>> _getTours(docs) async {
+    List<Tour> tours = [];
+
+    for (var doc in docs) {
+      var placesRef = await doc.reference.collection('places').get();
+
+      final tour = doc.data() as Map<String, dynamic>;
+
+      tour.addAll({'places': _convertPlaces(placesRef.docs)});
+      tours.add(Tour.fromJson(tour));
+    }
+    return tours;
   }
 
   Future<List<Tour>> getAllTours() async {
@@ -46,20 +71,6 @@ class ToursRepository {
     return tours;
   }
 
-  Future<List<Tour>> _getTours(docs) async {
-    List<Tour> tours = [];
-
-    for (var doc in docs) {
-      var placesRef = await doc.reference.collection('places').get();
-
-      final tour = doc.data() as Map<String, dynamic>;
-
-      tour.addAll({'places': _convertPlaces(placesRef.docs)});
-      tours.add(Tour.fromJson(tour));
-    }
-    return tours;
-  }
-
   Future<List<Tour>> getUserTours() async {
     QuerySnapshot snapshot = await _fireStore
         .collection('users')
@@ -73,7 +84,11 @@ class ToursRepository {
   }
 
   Future<Tour> updateTour(Tour tour) async {
-    var tourRef = _fireStore.doc(userId).collection('tours').doc(tour.key);
+    var tourRef = _fireStore
+        .collection('users')
+        .doc(userId)
+        .collection('tours')
+        .doc(tour.key);
 
     if (tour.key == null) {
       tour = tour.copyWith(key: tourRef.id);
@@ -153,7 +168,11 @@ class ToursRepository {
   }
 
   Future<void> deleteTour(Tour tour) async {
-    final tourRef = _fireStore.doc(userId).collection('tours').doc(tour.key);
+    final tourRef = _fireStore
+        .collection('users')
+        .doc(userId)
+        .collection('tours')
+        .doc(tour.key);
 
     try {
       // Delete all the files from storage
