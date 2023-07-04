@@ -106,20 +106,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildButtons() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextButton(
-            onPressed: () {
-              authBloc.add(AuthSignIn(
-                email: email.text,
-                password: password.text,
-              ));
-            },
-            child: const Text('Sign In'),
-          ),
-        ),
-      ],
+    return TextButton(
+      onPressed: () {
+        authBloc.add(AuthSignIn(
+          email: email.text.trim(),
+          password: password.text,
+        ));
+      },
+      child: const Text('Sign In'),
     );
   }
 }
