@@ -116,7 +116,7 @@ class _TourPageState extends State<TourPage> {
   }
 
   Future<bool> _checkOwner() async {
-    var result = await ToursRepository().owned(widget.tour);
+    var result = await ToursRepository().isOwned(widget.tour);
     setState(() {});
     return result;
   }

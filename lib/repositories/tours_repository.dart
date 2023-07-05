@@ -26,7 +26,7 @@ class ToursRepository {
     return places;
   }
 
-  Future<bool> owned(Tour tour) async {
+  Future<bool> isOwned(Tour tour) async {
     final List result = await _fireStore
         .collection('users')
         .doc(userId)
