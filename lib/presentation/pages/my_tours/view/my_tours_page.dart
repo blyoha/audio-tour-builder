@@ -31,7 +31,15 @@ class _MyToursPageState extends State<MyToursPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(title: const Text("My Tours")),
+      appBar: AppBar(
+        title: const Text("My Tours"),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(context, 'profile'),
+            icon: const Icon(Icons.account_circle_outlined),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: "create",
         onPressed: () =>

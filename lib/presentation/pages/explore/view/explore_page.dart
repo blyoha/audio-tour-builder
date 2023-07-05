@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../repositories/auth_repository.dart';
 import '../../../../repositories/models/tour.dart';
 import '../../../../repositories/tours_repository.dart';
 import '../../../../theme/theme_constants.dart';
@@ -33,7 +32,15 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(title: const Text("Explore Tours")),
+      appBar: AppBar(
+        title: const Text("Explore Tours"),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(context, 'profile'),
+            icon: const Icon(Icons.account_circle_outlined),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 12.0,
