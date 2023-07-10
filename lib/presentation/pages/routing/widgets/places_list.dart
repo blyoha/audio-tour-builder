@@ -78,6 +78,7 @@ class PlaceTile extends StatelessWidget {
             builder: (context) => PlaceInfoSheet(
               title: place.title!,
               description: place.description!,
+              images: place.images!,
             ),
           ),
         );
