@@ -1,5 +1,3 @@
-import 'package:audioTourBuilder/presentation/pages/auth/view/login_page.dart';
-import 'package:audioTourBuilder/presentation/pages/auth/view/sign_up_page.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
