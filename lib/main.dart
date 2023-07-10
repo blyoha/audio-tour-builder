@@ -59,6 +59,7 @@ class _TourBuilderAppState extends State<TourBuilderApp> {
     return BlocProvider(
       create: (context) => AuthBloc(authRepo: _authRepo),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: _themeManager.themeMode,
