@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:latlong2/latlong.dart';
 
 import 'models/models.dart';
 
@@ -12,19 +11,6 @@ class ToursRepository {
   final Reference _storage = FirebaseStorage.instance.ref();
 
   final String userId = FirebaseAuth.instance.currentUser!.uid;
-
-  List<Place> _convertPlaces(dynamic list) {
-    List<Place> places = [];
-    for (var p in list) {
-      final place = p.data();
-      place.update(
-          'location', (value) => LatLng(value.latitude, value.longitude));
-
-      places.add(Place.fromJson(place));
-    }
-
-    return places;
-  }
 
   Future<bool> isOwned(Tour tour) async {
     final List result = await _fireStore
@@ -38,36 +24,66 @@ class ToursRepository {
     return result.isNotEmpty;
   }
 
-  Future<List<Tour>> _getTours(docs) async {
-    List<Tour> tours = [];
+  Future<bool> isLiked(Tour tour) async {
+    DocumentSnapshot user =
+        await _fireStore.collection('users').doc(userId).get();
 
-    for (var doc in docs) {
-      var placesRef = await doc.reference.collection('places').get();
+    final fav =
+        List<DocumentReference>.from(user.get('favorites')).map((e) => e.id);
 
-      final tour = doc.data() as Map<String, dynamic>;
+    return fav.contains(tour.key);
+  }
 
-      tour.addAll({'places': _convertPlaces(placesRef.docs)});
-      tours.add(Tour.fromJson(tour));
+  Future<bool> toggleLike(Tour tour) async {
+    final ref = _fireStore
+        .collection('users')
+        .doc(tour.author)
+        .collection('tours')
+        .doc(tour.key);
+
+    try {
+      await _fireStore.collection('users').doc(userId).update({
+        'favorites': tour.isLiked
+            ? FieldValue.arrayRemove([ref])
+            : FieldValue.arrayUnion([ref])
+      });
+    } catch (e) {
+      return false;
     }
-    return tours;
+
+    tour.isLiked = !tour.isLiked;
+    return true;
+  }
+
+  Future<bool> _isLiked(String id) async {
+    DocumentSnapshot user =
+        await _fireStore.collection('users').doc(userId).get();
+
+    final fav =
+        List<DocumentReference>.from(user.get('favorites')).map((e) => e.id);
+
+    return fav.contains(id);
   }
 
   Future<List<Tour>> getAllTours() async {
-    QuerySnapshot snapshot = await _fireStore
-        .collection('users')
-        .where('id', isNotEqualTo: userId)
-        .get();
+    var all = await _fireStore.collection('allTours').doc('tours').get();
 
     List<Tour> tours = [];
 
-    for (var user in snapshot.docs) {
-      var userTours = await user.reference
-          .collection('tours')
-          .get()
-          .then((list) => _getTours(list.docs));
+    for (DocumentReference ref in all.get('list')) {
+      final data =
+          await _fireStore.doc(ref.path).get().then((value) => value.data());
+      final places = await _fireStore.doc(ref.path).collection('places').get();
 
-      tours.addAll(userTours);
+      var list = places.docs.map((doc) => Place.fromJson(doc.data())).toList();
+
+      bool liked = await _isLiked(ref.id);
+
+      data?.addAll({'places': list, 'isLiked': liked});
+
+      tours.add(Tour.fromJson(data as Map<String, dynamic>));
     }
+
     return tours;
   }
 
@@ -78,7 +94,49 @@ class ToursRepository {
         .collection('tours')
         .get();
 
-    List<Tour> tours = await _getTours(snapshot.docs);
+    List<Tour> tours = [];
+
+    for (DocumentSnapshot doc in snapshot.docs) {
+      var places = await doc.reference.collection('places').get();
+
+      final data = doc.data() as Map<String, dynamic>;
+
+      var list = places.docs.map((doc) => Place.fromJson(doc.data())).toList();
+
+      bool liked = await _isLiked(doc.id);
+      data.addAll({'places': list, 'isLiked': liked});
+      data.addAll({'places': list});
+      tours.add(Tour.fromJson(data));
+    }
+
+    return tours;
+  }
+
+  Future<List<Tour>> getFavorites() async {
+    var snapshot = await _fireStore.collection('users').doc(userId).get();
+
+    List<Tour> tours = [];
+
+    for (DocumentReference doc in snapshot.get('favorites')) {
+      final snapshot = await doc.get();
+
+      if (!snapshot.exists) {
+        _fireStore.collection('users').doc(userId).update({
+          'favorites': FieldValue.arrayRemove([snapshot.reference])
+        });
+        continue;
+      }
+
+      final data = Map.from(snapshot.data() as Map<dynamic, dynamic>);
+      final places = await doc.collection('places').get();
+
+      var list = places.docs.map((doc) => Place.fromJson(doc.data())).toList();
+
+      bool liked = await _isLiked(doc.id);
+      data.addAll({'places': list, 'isLiked': liked});
+
+      tours.add(Tour.fromJson(data));
+    }
 
     return tours;
   }
@@ -120,6 +178,7 @@ class ToursRepository {
         json['location'].latitude,
         json['location'].longitude,
       );
+      json['author'] = userId;
 
       // Save audio
       if (p.audioUri != null) {
