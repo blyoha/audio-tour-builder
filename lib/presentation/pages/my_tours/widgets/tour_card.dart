@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../repositories/models/tour.dart';
+import '../../../../repositories/tours_repository.dart';
 import '../../../../theme/theme_constants.dart';
 
-class TourCard extends StatelessWidget {
+class TourCard extends StatefulWidget {
   final Tour tour;
 
   const TourCard({Key? key, required this.tour}) : super(key: key);
 
+  @override
+  State<TourCard> createState() => _TourCardState();
+}
+
+class _TourCardState extends State<TourCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,21 +36,33 @@ class TourCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                tour.title,
+                widget.tour.title,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 22.0,
                 ),
               ),
               InkWell(
-                child: const Icon(Icons.favorite_border_outlined, size: 32.0),
-                onTap: () {},
+                child: widget.tour.isLiked
+                    ? const Icon(
+                  Icons.favorite_outlined,
+                  color: Colors.redAccent,
+                  size: 32.0,
+                )
+                    : const Icon(
+                  Icons.favorite_border_outlined,
+                  size: 32.0,
+                ),
+                onTap: () async {
+                  await context.read<ToursRepository>().toggleLike(widget.tour);
+                  setState(() {});
+                },
               ),
             ],
           ),
           const Gap(8.0),
           Text(
-            tour.description,
+            widget.tour.description,
             style: const TextStyle(
               color: secondaryTextColor,
               fontSize: 16.0,
