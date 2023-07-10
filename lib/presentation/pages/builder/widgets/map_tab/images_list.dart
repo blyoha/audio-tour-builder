@@ -39,7 +39,7 @@ class _ImagesListState extends State<ImagesList> {
         ),
         const Gap(8.0),
         SizedBox(
-          height: 100.0,
+          height: 150.0,
           child: ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.horizontal,
@@ -112,7 +112,6 @@ class _ImagesListState extends State<ImagesList> {
         ),
       ),
       child: Container(
-        width: 100.0,
         decoration: BoxDecoration(
           color: primaryTextColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(15.0),
@@ -131,7 +130,7 @@ class _ImagesListState extends State<ImagesList> {
         _pickFile();
       },
       child: Container(
-        width: 100.0,
+        width: 150.0,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: primaryTextColor.withOpacity(0.1),
