@@ -24,16 +24,6 @@ class ToursRepository {
     return result.isNotEmpty;
   }
 
-  Future<bool> isLiked(Tour tour) async {
-    DocumentSnapshot user =
-        await _fireStore.collection('users').doc(userId).get();
-
-    final fav =
-        List<DocumentReference>.from(user.get('favorites')).map((e) => e.id);
-
-    return fav.contains(tour.key);
-  }
-
   Future<bool> toggleLike(Tour tour) async {
     final ref = _fireStore
         .collection('users')
@@ -67,7 +57,6 @@ class ToursRepository {
 
   Future<List<Tour>> getAllTours() async {
     var all = await _fireStore.collection('allTours').doc('tours').get();
-
     List<Tour> tours = [];
 
     for (DocumentReference ref in all.get('list')) {
@@ -76,7 +65,6 @@ class ToursRepository {
       final places = await _fireStore.doc(ref.path).collection('places').get();
 
       var list = places.docs.map((doc) => Place.fromJson(doc.data())).toList();
-
       bool liked = await _isLiked(ref.id);
 
       data?.addAll({'places': list, 'isLiked': liked});
@@ -152,6 +140,10 @@ class ToursRepository {
       tour = tour.copyWith(key: tourRef.id);
     }
 
+    if (tour.author.isEmpty) {
+      tour = tour.copyWith(author: userId);
+    }
+
     // Save cover image
     if (tour.imageUrl != null) {
       final file = File(tour.imageUrl!);
@@ -178,7 +170,6 @@ class ToursRepository {
         json['location'].latitude,
         json['location'].longitude,
       );
-      json['author'] = userId;
 
       // Save audio
       if (p.audioUri != null) {
