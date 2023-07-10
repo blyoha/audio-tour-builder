@@ -73,10 +73,7 @@ class _DetailsTabState extends State<DetailsTab> {
                       ),
                       child: widget.coverController.text.isEmpty
                           ? const Icon(Icons.mode_edit_outline_outlined)
-                          : Image.file(
-                              File(widget.coverController.text),
-                              fit: BoxFit.cover,
-                            ),
+                          : _buildImage(widget.coverController.text),
                     ),
                   ),
                 ),
@@ -87,6 +84,27 @@ class _DetailsTabState extends State<DetailsTab> {
         ),
       ),
     );
+  }
+
+  Widget _buildImage(String uri) {
+    if (uri.contains('https://firebasestorage')) {
+      return Image.network(
+        uri,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Icon(
+            Icons.access_time,
+            color: Colors.black.withOpacity(0.5),
+          );
+        },
+      );
+    } else {
+      return Image.file(
+        File(widget.coverController.text),
+        fit: BoxFit.cover,
+      );
+    }
   }
 
   void _pickFile() async {
