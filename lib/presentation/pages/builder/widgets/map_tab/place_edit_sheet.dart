@@ -75,28 +75,72 @@ class _PlaceEditSheetState extends State<PlaceEditSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(color: errorColor),
-                      ),
-                    ),
-                    OutlinedButton(
                       onPressed: () {
                         if (state is BuilderEditing) {
                           final places = List.of(state.tour.places);
                           places.removeAt(widget.place.key!);
 
-                          final tour = state.tour.copyWith(places: places);
+                          final tour = state.tour.copyWith(
+                            places: places,
+                          );
 
                           bloc.add(BuilderLoad(tour: tour));
                           Navigator.of(context).pop();
                         }
                       },
-                      child: const Text('Save'),
+                      child: const SizedBox(
+                        width: 50.0,
+                        child: Icon(
+                          Icons.delete_outline_rounded,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'Edit place',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    OutlinedButton(
+                      style: const ButtonStyle(
+                        foregroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.black),
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(primaryColor),
+                      ),
+                      onPressed: () {
+                        if (state is BuilderEditing) {
+                          final places = List.of(state.tour.places);
+
+                          final place = widget.place.copyWith(
+                            title: title.text,
+                            description: description.text,
+                            audioUri: audioFile?.path,
+                            images: images.map((e) => e.path).toList(),
+                          );
+
+                          if (places.contains(place)) {
+                            places.replaceRange(
+                                place.key!, place.key! + 1, [place]);
+                          } else {
+                            places.add(place);
+                          }
+
+                          final tour = state.tour.copyWith(
+                            places: places,
+                          );
+
+                          bloc.add(BuilderLoad(tour: tour));
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const SizedBox(
+                        width: 50.0,
+                        child: Text('Save', textAlign: TextAlign.center),
+                      ),
                     ),
                   ],
                 ),
+                const Gap(12.0),
                 Expanded(
                   child: ListView(
                     controller: scrollController,
@@ -123,36 +167,6 @@ class _PlaceEditSheetState extends State<PlaceEditSheet> {
                           _buildFilePicker(),
                           const Gap(12.0),
                           ImagesList(images: images),
-                          const Gap(12.0),
-                          TextButton(
-                            onPressed: () {
-                              if (state is BuilderEditing) {
-                                final places = List.of(state.tour.places);
-
-                                final place = widget.place.copyWith(
-                                  title: title.text,
-                                  description: description.text,
-                                  audioUri: audioFile?.path,
-                                  images: images.map((e) => e.path).toList(),
-                                );
-
-                                if (places.contains(place)) {
-                                  places.replaceRange(
-                                      place.key!, place.key! + 1, [place]);
-                                } else {
-                                  places.add(place);
-                                }
-
-                                final tour = state.tour.copyWith(
-                                  places: places,
-                                );
-
-                                bloc.add(BuilderLoad(tour: tour));
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: const Text("Save"),
-                          ),
                         ],
                       ),
                     ],
