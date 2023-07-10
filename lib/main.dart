@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/auth/auth_bloc.dart';
 import 'firebase_options.dart';
 import 'repositories/auth_repository.dart';
+import 'repositories/tours_repository.dart';
 import 'router.dart';
 import 'theme/theme_constants.dart';
 import 'theme/theme_manager.dart';
@@ -19,8 +20,15 @@ Future<void> main() async {
   final isLogged = await authRepo.isLogged();
   final initRoute = isLogged ? AppRouter.homePage : AppRouter.welcomePage;
 
-  runApp(RepositoryProvider.value(
-    value: authRepo,
+  runApp(MultiRepositoryProvider(
+    providers: [
+      RepositoryProvider.value(
+        value: authRepo,
+      ),
+      RepositoryProvider(
+        create: (context) => ToursRepository(),
+      ),
+    ],
     child: TourBuilderApp(initialRoute: initRoute),
   ));
 }
@@ -48,7 +56,6 @@ class _TourBuilderAppState extends State<TourBuilderApp> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Use AuthBloc only
     return BlocProvider(
       create: (context) => AuthBloc(authRepo: _authRepo),
       child: MaterialApp(

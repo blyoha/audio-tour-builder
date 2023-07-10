@@ -35,7 +35,7 @@ class _BuilderPageState extends State<BuilderPage> {
 
     Tour tour = widget.tour;
     bloc = BuilderBloc(
-      toursRepo: ToursRepository(),
+      toursRepo: context.read<ToursRepository>(),
       locationRepo: LocationRepository(),
     );
     bloc.add(BuilderLoad(tour: tour));

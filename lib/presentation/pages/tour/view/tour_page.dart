@@ -116,7 +116,7 @@ class _TourPageState extends State<TourPage> {
   }
 
   Future<bool> _checkOwner() async {
-    var result = await ToursRepository().isOwned(widget.tour);
+    var result = await context.read<ToursRepository>().isOwned(widget.tour);
     setState(() {});
     return result;
   }
@@ -148,7 +148,7 @@ class _TourPageState extends State<TourPage> {
                   ),
                   OutlinedButton(
                     onPressed: () async {
-                      final repo = ToursRepository();
+                      final repo = context.read<ToursRepository>();
                       await repo
                           .deleteTour(widget.tour)
                           .then((value) => Navigator.pop(context))

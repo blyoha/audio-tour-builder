@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../repositories/tours_repository.dart';
 import '../../../../theme/theme_constants.dart';
 import '../../explore/view/explore_page.dart';
 import '../../my_tours/view/my_tours_page.dart';
@@ -28,12 +26,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _buildNavBar(),
-      body: RepositoryProvider<ToursRepository>(
-        create: (context) => ToursRepository(),
-        child: IndexedStack(
-          index: _currentIndex,
-          children: pages,
-        ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: pages,
       ),
     );
   }
