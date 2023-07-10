@@ -214,6 +214,11 @@ class ToursRepository {
       await placeRef.set(json);
     }
 
+    // Add to list of all tours
+    await _fireStore.collection('allTours').doc('tours').update({
+      'list': FieldValue.arrayUnion([tourRef])
+    });
+
     return tour;
   }
 
@@ -235,6 +240,11 @@ class ToursRepository {
       }
       // Delete the tour FireStore
       await tourRef.delete();
+
+      // Remove from list of all tours
+      await _fireStore.collection('allTours').doc('tours').update({
+        'list': FieldValue.arrayRemove([tourRef])
+      });
     } on FirebaseException catch (e) {
       print(e);
     }
