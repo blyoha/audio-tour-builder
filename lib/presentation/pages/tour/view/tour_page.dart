@@ -111,6 +111,14 @@ class _TourPageState extends State<TourPage> {
         image,
         height: 200.0,
         fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Icon(
+            Icons.access_time,
+            size: 32.0,
+            color: Colors.black.withOpacity(0.5),
+          );
+        },
       ),
     );
   }
