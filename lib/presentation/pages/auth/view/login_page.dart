@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         },
         child: const Text(
-          'Forget password?',
+          'Forgot password?',
           style: TextStyle(
             decoration: TextDecoration.underline,
           ),
