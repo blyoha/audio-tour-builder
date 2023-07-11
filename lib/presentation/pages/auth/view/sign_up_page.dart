@@ -86,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 password: password.text,
               ));
             },
-            child: const Text('Sign In'),
+            child: const Text('Sign Up'),
           ),
         ],
       ),
