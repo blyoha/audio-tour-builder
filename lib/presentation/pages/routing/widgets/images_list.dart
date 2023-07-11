@@ -46,9 +46,9 @@ class ImagesList extends StatelessWidget {
             child: Column(
               children: [
                 const ResizeIndicator(),
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: Expanded(
                     child: Image.network(uri, fit: BoxFit.fitWidth),
                   ),
                 ),
