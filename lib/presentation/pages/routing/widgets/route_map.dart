@@ -53,19 +53,27 @@ class _RouteMapState extends State<RouteMap> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
-            child: CircleAvatar(
-              radius: 24.0,
-              backgroundColor: primaryColor,
-              foregroundColor: Colors.black,
-              child: IconButton(
-                icon: const Icon(Icons.my_location_outlined),
-                onPressed: () async {
-                  final pos =
-                      await context.read<RoutingBloc>().currentPosition();
-                  if (pos != null) {
-                    mapController.move(pos, 18.0);
-                  }
-                },
+            child: GestureDetector(
+              onTap: () async {
+                final pos = await context.read<RoutingBloc>().currentPosition();
+                if (pos != null) {
+                  mapController.move(pos, 18.0);
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: primaryColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(.5),
+                        blurRadius: 4.0,
+                      )
+                    ]),
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Icon(Icons.my_location_outlined, size: 28.0),
+                ),
               ),
             ),
           ),

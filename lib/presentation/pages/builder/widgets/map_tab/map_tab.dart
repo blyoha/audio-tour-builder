@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../../../blocs/builder/builder_bloc.dart';
+import '../../../../../theme/theme_constants.dart';
 import 'route_map.dart';
 import 'route_sheet.dart';
 
@@ -37,37 +38,38 @@ class _MapTabState extends State<MapTab> {
           Positioned(
             right: 10.0,
             top: 10.0,
-            child: FloatingActionButton.small(
-              heroTag: "currentPosition",
-              child: const Icon(Icons.my_location_outlined),
-              onPressed: () async {
-                final pos = await bloc.currentPosition();
-                if (pos != null) {
-                  _mapController.move(pos, 18.0);
-                }
-              },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15.0),
+              child: GestureDetector(
+                onTap: () async {
+                  final pos = await bloc.currentPosition();
+                  if (pos != null) {
+                    _mapController.move(pos, 18.0);
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: primaryColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(.5),
+                          blurRadius: 4.0,
+                        )
+                      ]),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(Icons.my_location_outlined, size: 28.0),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
   }
-
-  Widget _buildMap() {
-    // TODO: Implement _buildMap
-    throw UnimplementedError();
-  }
-
-  Widget _buildBottomSheet() {
-    // TODO: Implement _buildMap
-    throw UnimplementedError();
-  }
-
-  _getCenter() {
-    // TODO: Get first place position if exists
-    return bloc.currentPosition();
-  }
-
+  
   void askPermission() async {
     // LocationPermission permission = await Geolocator.checkPermission();
     LocationPermission permission = await Geolocator.requestPermission();
